@@ -22,7 +22,7 @@ def rad2degrees(m): # convertir radianes a degrees y round
 def solucion(x,y,z,orientacion): # dado x,y,z da los angulos y pulsos de cada articulacion 
 
     array =[] 
-    a = e4+e5-e1-z 
+    a = e4+e5-e1-0
     b = sqrt(pow(x,2)+pow(y,2))
     c = sqrt(pow(a,2)+pow(b,2))
     r = sqrt(pow(x,2)+pow(y,2)) *15 # Escala 15 
@@ -31,11 +31,20 @@ def solucion(x,y,z,orientacion): # dado x,y,z da los angulos y pulsos de cada ar
     q2 = rad2degrees(asin(a/c) + acos((pow(c,2)+pow(e2,2)-pow(e3,2))/(2*c*e2)))
     q3 = rad2degrees(acos((pow(e2,2)+pow(e3,2)-pow(c,2))/(2*e2*e3)))
     q4 = rad2degrees(asin(b/c) + acos((pow(c,2)+pow(e3,2)-pow(e2,2))/(2*c*e3))) #q4 = 360-90-q1-q2-q3
-    q5 = orientacion  #orientacion atan(yz/xz q5 
+    q5 = orientacion-90  #orientacion atan(yz/xz q5 
 
     q2 = round((90-q2),5) # resta de 90 segun mi sistema de referencia 
     q3 = round((90-q3),5) 
     q4 = round((90-q4),5) 
+    print("Grado de a1 antes: ")
+    print(q1)
+
+    # arreglo para lado positivo de y, desfase por posicion del robot 
+    if(z==1):
+        q1 = q1-6 
+
+    print("grado a1 despues: ")
+    print(q1)
     array = pulsos(q1,q2,q3,q4,q5) # guardar en array la conversion de grados ya restados a pulsos 
 
     # mostrar pulsos segun sistema 
@@ -45,5 +54,7 @@ def solucion(x,y,z,orientacion): # dado x,y,z da los angulos y pulsos de cada ar
     newQ5 = round(angulos_pulsos(newQ5,-90,90,2352,496)) # angulo que debe moverse a5 para quedar 90 en el medio 
 
     return array,newQ5
+
+
     
 

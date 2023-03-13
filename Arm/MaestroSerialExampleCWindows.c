@@ -26,11 +26,12 @@
  * baudRate: The baud rate in bits per second.
  * Returns INVALID_HANDLE_VALUE if it fails.  Otherwise returns a handle to the port.
  */
+
 HANDLE openPort(const char * portName, unsigned int baudRate)
 {
 	HANDLE port;
 	DCB commState;
-	BOOL success;
+	BOOL success; 
 	COMMTIMEOUTS timeouts;
 
 	/* Open the serial port. */
@@ -128,7 +129,7 @@ BOOL maestroSetTarget(HANDLE port, unsigned char channel, unsigned short target)
 	if (!success)
 	{
 		fprintf(stderr, "Error: Unable to write Set Target command to serial port.  Error code 0x%lx.\n", GetLastError());
-		return 0;
+		 return 0;
 	}
 	if (sizeof(command) != bytesTransferred)
 	{
@@ -222,13 +223,13 @@ int unloading(port, lugar, a2) {
 
 int main(int argc, char * argv[])
 {
-	// void pulsosInC(a1,a2,a3,a4,a5,destino,newQ5)
+
 	HANDLE port;
 	char * portName;
 	int baudRate;
 	BOOL success;
 	unsigned short target, position;
-	int a1, a2, a3, a4, a5, newQ5 = 0; // se elimina luego de modificar main a tipo funcion 
+	int a1, a2, a3, a4, a5, newQ5, descarga = 0; // se elimina luego de modificar main a tipo funcion 
 	unsigned short inia1, inia2, inia3, inia4, inia5, inia6 = 0;
 
 	// initial position of the robot
@@ -238,6 +239,17 @@ int main(int argc, char * argv[])
 	inia4 = 2464 * 4; 
 	inia5 = 920 * 4; // 973
 	inia6 = 944 * 4; 
+
+	a1= (int) strtol(argv[1], NULL, 10); // pulso1
+	a2= (int) strtol(argv[2], NULL, 10); // pulso2 
+	a3= (int) strtol(argv[3], NULL, 10); // pulso3 
+	a4= (int) strtol(argv[4], NULL, 10); // pulso4
+	a5= (int) strtol(argv[5], NULL, 10); // pulso5
+	descarga= (int) strtol(argv[6], NULL, 10); // destino
+	newQ5= (int) strtol(argv[7], NULL, 10); // newq5 
+
+	printf("pulsos: %d %d %d %d %d",a1,a2,a3,a4,a5);
+	printf("destino y newq5: %d %d",descarga,newQ5); 
 
 	portName = "\\\\.\\COM7"; 
 	baudRate = 9600;
@@ -250,13 +262,12 @@ int main(int argc, char * argv[])
 	if (!success) { return 0; }
 
 	system("pause"); 
-	//printf("Pulsos por orden: a1: %d, a2: %d, a3: %d, a4: %d, a5: %d", inia1, inia2, inia3, inia4, inia5); 
 	success = 0; 
 
 
-	//destination(port, 1016, 1169, 1608, 2064, 2084, 1868); // para jenga 
+	//destination(port, a1, a2, a3, a4, a5, newQ5); // para jenga  newq5 = 1868
 	//system("pause");
-	//unloading(port, -1); //para descargar -1 izquierda y 1 derecha. 
+	//unloading(port, descarga); //para descargar -1 izquierda y 1 derecha. 
 	//system("pause");
 	// startrobot(port,inia1,inia2,inia3,inia4,inia5) 
 	// 1016.96, 1169.04, 1608.48, 2064.62, 2084.32
@@ -269,4 +280,7 @@ int main(int argc, char * argv[])
 
 	return 0;
 }
+
+
+
 

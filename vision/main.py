@@ -8,6 +8,8 @@ import utils
 import arm 
 import threading
 from multiprocessing.pool import ThreadPool
+import os 
+import time 
 
 
 pool = ThreadPool(processes=1)
@@ -168,7 +170,7 @@ def generate_mask(frame, hsv, color):
         # using functions to get the contour of shapes
         epsilon = 0.01 * cv2.arcLength(count, True)
         approx = cv2.approxPolyDP(count, epsilon, True)
-        # get area to work with only visible objects
+        # get area to work with only visible objects solware y can cat 
         area = cv2.contourArea(count)
         if area > 50:
             # recognize rectangles 
@@ -183,7 +185,7 @@ def generate_mask(frame, hsv, color):
                     num_corner = new_corner(corner2, num_corner, cx, cy)
                     # draws the region of interest as a rectangle
                     min_prev, max_prev = pixelesextremos(corner1,corner2)
-                    #cv2.rectangle(frame, (int(corner1[0]), int(corner1[1])), (int(corner2[0]), int(corner2[1])), rgb_white, 2) 
+                    cv2.rectangle(frame, (int(corner1[0]), int(corner1[1])), (int(corner2[0]), int(corner2[1])), rgb_black, 2) 
                     #draw_half_circle_no_round(frame)
                     return corner1, corner2
                 elif num_corner == 2:
@@ -194,6 +196,7 @@ def generate_mask(frame, hsv, color):
                 flag = 0
                 n = approx.ravel()
                 i = 0
+                aux = 0
                 vx_coord = []
                 vy_coord = []
                 for j in n :
@@ -220,14 +223,44 @@ def generate_mask(frame, hsv, color):
                     # frame y count 
                     # Find the orientation of each shape
                     orientacion = getOrientation(count, frame)
-                    orientacion = orientacion - 90 #si es negativo gira a la izq y si es positivo gira a la derecha
+                    print("Orientacion antes de pulsos: ")
+                    print(orientacion)
+                    #orientacion = orientacion - 90 #si es negativo gira a la izq y si es positivo gira a la derecha
+
+                    # MODIFICACIONES PARA AJUSTAR ORIENTACION Y PRECISION DEL ROBOT SEGUN UBICACION FISICA (CALIBRACION)
                     print("Orientacion: "+str(orientacion))
+                    if(cx2 > 3 and orientacion<=90.00): 
+                        orientacion = orientacion + 87
+                        print("entro aqui primero")
+                        aux = 1
+                    elif(cx2 > 3 and orientacion>90.00): # cx = cy pq esta invertido 
+                        orientacion = orientacion - 100 
+                        print("entro aqui despues ")
+                        aux = 1 
+                    # arreglo 
+                    # if(cx2 < 3 and orientacion<90.00): 
+                    #     orientacion = orientacion + 100
+                    #     print("entro aqui primero negativo")
+                    if(cx2 < 3 and orientacion>90.00): # cx = cy pq esta invertido 
+                        orientacion = orientacion +3 
+                        print("entro aqui despues negativo")
 
                     # INGRESA FUNCION PARA TRANSFORMAR A PULSOS Y GUARDAR EN ARRAY 
                     #se invierte, para tener y como negativo y x como positivo 
-                    pulsos,newQ5 = arm.solucion(cy2,cx2,0,orientacion)
+                    pulsos,newQ5 = arm.solucion(cy2,cx2,aux,orientacion)
+                    print("llamado de pulsos: ")
                     print(pulsos,newQ5)
+                    #time.sleep(200)
+                    destino = -1 
                     # INGRESA FUNCION DE C++ PARA ENVIAR EL ARRAY CON LOS PULSOS 
+                    command_1 = 'gcc MaestroSerialExampleCWindows.c -o myprog'    
+                    os.system(command_1)
+                    command_2 = 'start myprog ' +str(pulsos[0])+' '+str(pulsos[1])+' '+str(pulsos[2])+' '+str(pulsos[3]) +' '+str(pulsos[4]) +' '+str(destino)+' '+str(newQ5)
+                    os.system(command_2)
+                    command_1 = []
+                    command_2 = [] 
+                    aux = 0
+                    # time.sleep(20)                  
                     # se envia c++(pulsos[0],pulsos[1],pulsos[2],pulsos[3],pulsos[4], destino, newQ5)
                     # pulsos = movimiento del robot 
                     # destino = izq o derecha 
