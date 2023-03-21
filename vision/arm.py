@@ -41,7 +41,12 @@ def solucion(x,y,z,orientacion): # dado x,y,z da los angulos y pulsos de cada ar
 
     # arreglo para lado positivo de y, desfase por posicion del robot 
     if(z==1):
-        q1 = q1-6 
+        q1 = q1-4.5
+    elif(z==2):
+        print("sin")
+        q1 = q1-4
+    elif(z==3):
+        q1= q1 -1
 
     print("grado a1 despues: ")
     print(q1)

@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <windows.h>
 #include <time.h>
+HANDLE wHnd;
 
 /** Opens a handle to a serial port in Windows using CreateFile.
  * portName: The name of the port.
@@ -148,13 +149,13 @@ int startrobot(port, a1, a2, a3, a4, a5) {
 	s2 = maestroSetTarget(port, 2, a2);
 	Sleep(1000);
 	s3 = maestroSetTarget(port, 4, a3);
-	Sleep(1000);
+	//Sleep(1000);
 	s5 = maestroSetTarget(port, 8, a5);
-	Sleep(1000); //10000 = 10 segundos 
+	//Sleep(1000); //10000 = 10 segundos 
 	s4 = maestroSetTarget(port, 6, a4);
-	Sleep(1000);
+	//Sleep(1000);
 	s1 = maestroSetTarget(port, 0, a1);
-	Sleep(1000);
+	//Sleep(1000);
 	s6 = maestroSetTarget(port, 10, 944);
 	if (!s1 || !s2 || !s3 || !s4 || !s5) { return error; }
 
@@ -167,61 +168,66 @@ int destination(port, a1, a2, a3, a4, a5,newq5) {
 	BOOL s1, s2, s3, s4, s5, s6;
 	char error = "Uno de los pulsos esta vacio";
 	s5 = maestroSetTarget(port, 8, newq5 * 4); // para poner la pinza siempre recta a la linea central.
-	Sleep(1000);
+	//Sleep(1000);
 	s5 = maestroSetTarget(port, 8, a5 * 4); // se mueve los grados que debe. 
-	Sleep(1000);
+	//Sleep(1000);
 	s4 = maestroSetTarget(port, 6, a4 * 4);
-	Sleep(1000);
+	//Sleep(1000);
 	s3 = maestroSetTarget(port, 4, a3 * 4);
-	Sleep(1000);
+	//Sleep(1000);
 	s1 = maestroSetTarget(port, 0, a1 * 4);
 	Sleep(2000);
 	s2 = maestroSetTarget(port, 2, a2 * 4);
-	Sleep(3000);
-	s6 = maestroSetTarget(port, 10, 1385 * 4);
+	Sleep(1500);
+	s6 = maestroSetTarget(port, 10, 1450 * 4);
+	Sleep(1000);
 	if (!s1 || !s2 || !s3 || !s4 || !s5) { return error; }
 
 	return 1;
 }
 
 // move the robot to unloading the jenga
-int unloading(port, lugar) {
+int unloading(port, lugar,a1) {
 	BOOL s1, s2, s6, s3,s4, s5;
+	int tiempo = 0; 
 	char error = "Uno de los pulsos esta vacio";
-
 	// movimiento de s2 para arriba 
 	s2 = maestroSetTarget(port, 2, 1408 * 4);
-	Sleep(1000);
-	// cuanto debo mover s3 para que llegue al extremo ? 
+	Sleep(1200);
 
-	if (lugar < 0) {
+	if(a1<1496 && lugar == 2){
+		tiempo = 2000;
+	}else{
+		tiempo = 5000;
+	}
+
+	if(a1>1496 && lugar ==1){
+		tiempo = 2000;
+	}else{
+		if(a1<1496 && lugar==1){
+			tiempo = 5000;
+		}
+	}
+
+	if (lugar ==2) {
 		// s1 para izquierda 
+		s3 = maestroSetTarget(port, 4, 1480 * 4);
 		s1 = maestroSetTarget(port, 0, 496 * 4);
-		Sleep(2000);
-		// baja s2 
-		//s2 = maestroSetTarget(port, 2, 5000);
-		// abre s6 
-		s3 = maestroSetTarget(port, 4, 1507 * 4);
-		Sleep(1000);
 		s4 = maestroSetTarget(port, 6, 2427 * 4);
-		Sleep(1000);
+		//Sleep(1000);
 		s5 = maestroSetTarget(port, 8, 920 * 4);
-		Sleep(4000);
+		Sleep(tiempo);
 		s6 = maestroSetTarget(port, 10, 944);
 
 		return 1;
-
 	}
 	else {
 		// s1 para derecha 
-		s1 = maestroSetTarget(port, 0, 2496 * 4);
-		Sleep(2000);
 		s3 = maestroSetTarget(port, 4, 1507 * 4);
-		Sleep(1000);
+		s1 = maestroSetTarget(port, 0, 2496 * 4);
 		s4 = maestroSetTarget(port, 6, 2427 * 4);
-		Sleep(1000);
 		s5 = maestroSetTarget(port, 8, 920 * 4);
-		Sleep(4000);
+		Sleep(tiempo);
 		s6 = maestroSetTarget(port, 10, 944);
 
 	 	return 1;
@@ -233,6 +239,10 @@ int unloading(port, lugar) {
 
 int main(int argc, char * argv[])
 {
+	//define size window
+	wHnd = GetStdHandle(STD_OUTPUT_HANDLE);
+	SMALL_RECT windowSize = {0, 0, 30, 15};
+    SetConsoleWindowInfo(wHnd, 1, &windowSize); 
 
 	HANDLE port;
 	char * portName;
@@ -258,9 +268,6 @@ int main(int argc, char * argv[])
 	descarga= (int) strtol(argv[6], NULL, 10); // destino
 	newQ5= (int) strtol(argv[7], NULL, 10); // newq5 
 
-	//printf("pulsos: %d %d %d %d %d",a1,a2,a3,a4,a5);
-	//printf("destino y newq5: %d %d",descarga,newQ5); 
-
 	portName = "\\\\.\\COM7"; 
 	baudRate = 9600;
 
@@ -268,20 +275,13 @@ int main(int argc, char * argv[])
 	port = openPort(portName, baudRate);
 	if (port == INVALID_HANDLE_VALUE){ return 0; }
 
-	success = startrobot(port, inia1, inia2, inia3, inia4, inia5); 
-	if (!success) { return 0; }
+	startrobot(port,inia1,inia2,inia3,inia4,inia5);
 
-	//system("pause"); 
 	success = 0; 
 
-
 	destination(port, a1, a2, a3, a4, a5, newQ5); // para jenga  newq5 = 1868
-	unloading(port, descarga); //para descargar -1 izquierda y 1 derecha. 
-	//system("pause");
+	unloading(port, descarga,a1); //para descargar -1 izquierda y 1 derecha. 
 	startrobot(port,inia1,inia2,inia3,inia4,inia5); 
-	system("pause");
-	// 1016.96, 1169.04, 1608.48, 2064.62, 2084.32
-	
 	
 
 	/* Close the serial port so other programs can use it.

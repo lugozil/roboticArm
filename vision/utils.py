@@ -3,9 +3,12 @@ import data
 # utils for classes and conversion functions  
 
 # colors of agent triangles
-agent = {'blue': None,
-         'green': None,
-         'yellow': None}  
+agent = {'orange': None,
+         'brown': None, 
+         'red': None,
+         'blue': None,
+         'green': None
+         }  
 
 #classes definition
 class ViewPort:
@@ -21,14 +24,15 @@ class ViewPort:
     
 class Agent:
     def __init__(self, color): 
-        self.id = get_id(color)
-        self.cx = self.cy = self.direction = self.line2 = self.line1 = self.limit = self.radius = self.info = None 
-    def set_values(self, cx, cy, orientacion): 
+        self.color = get_id(color)
+        self.cx = self.cy = self.orientacion = self.line2 = self.line1 = self.limit = self.radius = self.info = self.aux =None 
+    def set_values(self, cx, cy, orientacion,aux): 
         self.cx = cx
         self.cy = cy 
         #self.radius = r 
         #self.direction = direction
         self.orientacion = orientacion
+        self.aux = aux
 
 #utils functions
 def get_id(color):
