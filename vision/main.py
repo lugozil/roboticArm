@@ -355,7 +355,7 @@ def calibration(cx2,cy2,orientacion):
 
 # clasificacion del medio cuando cx2 > 1 hasta cx2<3.5
     if(cx2>1 and cx2<4.5 and orientacion >=90): 
-        aux = 4
+        aux = 6
         auxorientacion = orientacion
         orientacion = orientacion -50         
         print("derecho 1")
@@ -489,6 +489,7 @@ def generate_mask(frame, hsv, color,centro,destino):
     corner2 = []
     lista = []
     newQ5 = 0
+    out = 0
 
     global band, min_prev, max_prev 
 
@@ -498,7 +499,7 @@ def generate_mask(frame, hsv, color,centro,destino):
         approx = cv2.approxPolyDP(count, epsilon, True)
         # get area to work with only visible objects solware y can cat 
         area = cv2.contourArea(count)
-        if area > 50:
+        if area > 150: # 50
             # recognize rectangles 
             if len(approx) == 4 and color == 'black': 
                 # computes the centroid of shapes 
@@ -518,7 +519,7 @@ def generate_mask(frame, hsv, color,centro,destino):
                     # reset values
                     corner1 = corner2 = []
                     num_corner = 0
-            elif len(approx) == 4 and color !='black':
+            elif len(approx) == 4 and color !='black' and area>1000:
                 flag = 0
                 n = approx.ravel()
                 i = 0
@@ -540,7 +541,7 @@ def generate_mask(frame, hsv, color,centro,destino):
                     i = i + 1
                 if flag == 4:  
                     cv2.drawContours(frame, [approx], 0, (0), 2)
-
+                    new_agent = utils.Agent(color) # guardo el color detectado en new_agent 
                     # computes the centroid   
                     cx, cy = centroid(count)
                     cv2.circle(frame,(int(cx),int(cy)),3,(rgb_white),-1)
@@ -564,11 +565,11 @@ def generate_mask(frame, hsv, color,centro,destino):
                     
                     print(color)
                     print(difx,dify)
+                    if(cx2<4 and cx2>-4 and cy2<4):
+                        out = 1
 
 
-                    if((difx>2 or difx<-1) and (dify>2 or dify<-2) and cy2>3): # si no es la posicion del ultimo jenga, ejecuta. 
-                        global conteo 
-                        conteo = conteo+1
+                    if((difx>2 or difx<-1) and (dify>2 or dify<-2) and out!=1): # si no es la posicion del ultimo jenga, ejecuta. 
                         # Calibracion del robot segun su posicion fisica. 
                         orientacion, aux = calibration(cx2,cy2,orientacion)
                 
@@ -576,28 +577,31 @@ def generate_mask(frame, hsv, color,centro,destino):
                         # INGRESA FUNCION PARA TRANSFORMAR A PULSOS Y GUARDAR EN ARRAY 
                         #se invierte, para tener y como negativo y x como positivo 
                         pulsos,newQ5 = arm.solucion(cy2,cx2,aux,orientacion)
-                        
-                        print("llamado de pulsos: ")
-                        print(pulsos,newQ5)
-                        # INGRESA FUNCION DE C++ PARA ENVIAR EL ARRAY CON LOS PULSOS 
-                        command_1 = 'gcc MaestroSerialExampleCWindows.c -o myprog'    
-                        os.system(command_1)
-                        command_2 = 'start myprog ' +str(pulsos[0])+' '+str(pulsos[1])+' '+str(pulsos[2])+' '+str(pulsos[3]) +' '+str(pulsos[4]) +' '+str(destino)+' '+str(newQ5)
-                        os.system(command_2)
-
-                    new_agent = utils.Agent(color) # guardo el color detectado en new_agent 
-                        # 
-                    new_agent.set_values(cy2, cx2, orientacion,aux) # x,y,orientacion 
-                    #print(new_agent.cx)
-                    time.sleep(14)
+                        if(newQ5!=0):
+                            global conteo 
+                            conteo = conteo+1
+                            print("llamado de pulsos: ")
+                            print(pulsos,newQ5)
+                            # INGRESA FUNCION DE C++ PARA ENVIAR EL ARRAY CON LOS PULSOS 
+                            command_1 = 'gcc pololu.c -o myprog'    
+                            os.system(command_1)
+                            command_2 = 'start myprog ' +str(pulsos[0])+' '+str(pulsos[1])+' '+str(pulsos[2])+' '+str(pulsos[3]) +' '+str(pulsos[4]) +' '+str(destino)+' '+str(newQ5)
+                            os.system(command_2)
+                            time.sleep(10)
+                                # 
+                            new_agent.set_values(cy2, cx2, orientacion,aux) # x,y,orientacion 
+                            #print(new_agent.cx)
+                
                     
-                    # create agent in the world
-                    global agent  
-                    utils.agent[color] = new_agent 
-                    min_prev = [] 
-                    max_prev = [] 
-
-                    return new_agent # retorna a managent
+                            # create agent in the world
+                            global agent  
+                            utils.agent[color] = new_agent 
+                            min_prev = [] 
+                            max_prev = [] 
+                            return new_agent # retorna a 
+                        
+                    new_agent.set_values(0,0,0,0)
+                    return new_agent 
                 else:
                     return False
                     

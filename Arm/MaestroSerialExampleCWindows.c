@@ -112,7 +112,7 @@ HANDLE openPort(const char * portName, unsigned int baudRate)
  * Returns 1 on success, 0 on failure.
  * Fore more information on this command, see the "Serial Servo Commands"
  * section of the Maestro User's Guide: http://www.pololu.com/docs/0J40 */
-BOOL maestroSetTarget(HANDLE port, unsigned char channel, unsigned short target)
+BOOL SetTarget(HANDLE port, unsigned char channel, unsigned short target)
 {
 	unsigned char command[4];
 	DWORD bytesTransferred;
@@ -145,17 +145,17 @@ int startrobot(port, a1, a2, a3, a4, a5) {
 
 	BOOL s1, s2, s3, s4, s5, s6;
 	char error = "Uno de los pulsos esta vacio";
-	s3 = maestroSetTarget(port, 4, a3);
+	s3 = SetTarget(port, 4, a3);
 	Sleep(1000);
-	s2 = maestroSetTarget(port, 2, a2);
+	s2 = SetTarget(port, 2, a2);
 	Sleep(1000);
-	s5 = maestroSetTarget(port, 8, a5);
+	s5 = SetTarget(port, 8, a5);
 	Sleep(1000); //10000 = 10 segundos 
-	s4 = maestroSetTarget(port, 6, a4);
+	s4 = SetTarget(port, 6, a4);
 	Sleep(1000);
-	s1 = maestroSetTarget(port, 0, a1);
+	s1 = SetTarget(port, 0, a1);
 	Sleep(1000);
-	s6 = maestroSetTarget(port, 10, 944);
+	s6 = SetTarget(port, 10, 944);
 	if (!s1 || !s2 || !s3 || !s4 || !s5) { return error; }
 
 	return 1;
@@ -166,19 +166,19 @@ int destination(port, a1, a2, a3, a4, a5,newq5) {
 
 	BOOL s1, s2, s3, s4, s5, s6;
 	char error = "Uno de los pulsos esta vacio";
-	s5 = maestroSetTarget(port, 8, newq5 * 4); // para poner la pinza siempre recta a la linea central.
+	s5 = SetTarget(port, 8, newq5 * 4); // para poner la pinza siempre recta a la linea central.
 	Sleep(1000);
-	s5 = maestroSetTarget(port, 8, a5 * 4); // se mueve los grados que debe. 
+	s5 = SetTarget(port, 8, a5 * 4); // se mueve los grados que debe. 
 	Sleep(1000);
-	s4 = maestroSetTarget(port, 6, a4 * 4);
+	s4 = SetTarget(port, 6, a4 * 4);
 	Sleep(1000);
-	s3 = maestroSetTarget(port, 4, a3 * 4);
+	s3 = SetTarget(port, 4, a3 * 4);
 	Sleep(1000);
-	s1 = maestroSetTarget(port, 0, a1 * 4);
+	s1 = SetTarget(port, 0, a1 * 4);
 	Sleep(1000);
-	s2 = maestroSetTarget(port, 2, a2 * 4);
+	s2 = SetTarget(port, 2, a2 * 4);
 	Sleep(1500);
-	s6 = maestroSetTarget(port, 10, 1355);
+	s6 = SetTarget(port, 10, 1355);
 	if (!s1 || !s2 || !s3 || !s4 || !s5) { return error; }
 
 	return 1;
@@ -192,27 +192,27 @@ int unloading(port, lugar, a2) {
 	a2destino = (a2 + 300) * 4; // 300 para que no llegue al piso. 
 
 	// movimiento de s2 para arriba 
-	s2 = maestroSetTarget(port, 2, 1408 * 4);
+	s2 = SetTarget(port, 2, 1408 * 4);
 	// cuanto debo mover s3 para que llegue al extremo ? 
 
 	if (lugar < 0) {
 		// s1 para izquierda 
-		s1 = maestroSetTarget(port, 0, 496 * 4);
+		s1 = SetTarget(port, 0, 496 * 4);
 		// baja s2 
-		s2 = maestroSetTarget(port, 2, 5000);
+		s2 = SetTarget(port, 2, 5000);
 		// abre s6 
-		s6 = maestroSetTarget(port, 10, 944);
+		s6 = SetTarget(port, 10, 944);
 
 		return 1;
 
 	}
 	else {
 		// s1 para derecha 
-		s1 = maestroSetTarget(port, 0, 2496 * 4);
+		s1 = SetTarget(port, 0, 2496 * 4);
 		// baja s2 
-		s2 = maestroSetTarget(port, 2, a2destino);
+		s2 = SetTarget(port, 2, a2destino);
 		// abre s6 
-		s6 = maestroSetTarget(port, 10, 944);
+		s6 = SetTarget(port, 10, 944);
 
 		return 1;
 	}

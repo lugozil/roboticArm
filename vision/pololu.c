@@ -1,32 +1,7 @@
-/* 
- *  All the Windows functions called by the program are documented on MSDN:
- *  http://msdn.microsoft.com/
- *
- *  The error codes that this program may output are documented on MSDN:
- *  http://msdn.microsoft.com/en-us/library/ms681381%28v=vs.85%29.aspx
- *
- *  The Maestro's serial commands are documented in the "Serial Interface"
- *  section of the Maestro user's guide:
- *  http://www.pololu.com/docs/0J40
- *
- *  For an advanced guide to serial port communication in Windows, see:
- *  http://msdn.microsoft.com/en-us/library/ms810467
- *
- *  REQUIREMENT: The Maestro's Serial Mode must be set to "USB Dual Port"
- *  or "USB Chained" for this program to work.
- */
-
 #include <stdio.h>
 #include <windows.h>
 #include <time.h>
 HANDLE wHnd;
-
-/** Opens a handle to a serial port in Windows using CreateFile.
- * portName: The name of the port.
- *   Examples: "COM4", "USB#VID_1FFB&PID_0089&MI_04#6&3ad40bf600004#".
- * baudRate: The baud rate in bits per second.
- * Returns INVALID_HANDLE_VALUE if it fails.  Otherwise returns a handle to the port.
- */
 
 HANDLE openPort(const char * portName, unsigned int baudRate)
 {
@@ -107,13 +82,7 @@ HANDLE openPort(const char * portName, unsigned int baudRate)
 	return port;
 }
 
-/** Implements the Maestro's Set Target serial command.
- * channel: Channel number from 0 to 23
- * target: The target value (for a servo channel, the units are quarter-milliseconds)
- * Returns 1 on success, 0 on failure.
- * Fore more information on this command, see the "Serial Servo Commands"
- * section of the Maestro User's Guide: http://www.pololu.com/docs/0J40 */
-BOOL maestroSetTarget(HANDLE port, unsigned char channel, unsigned short target)
+BOOL SetTarget(HANDLE port, unsigned char channel, unsigned short target)
 {
 	unsigned char command[4];
 	DWORD bytesTransferred;
@@ -146,17 +115,17 @@ int startrobot(port, a1, a2, a3, a4, a5) {
 
 	BOOL s1, s2, s3, s4, s5, s6;
 	char error = "Uno de los pulsos esta vacio";
-	s2 = maestroSetTarget(port, 2, a2);
+	s2 = SetTarget(port, 2, a2);
 	Sleep(1000);
-	s3 = maestroSetTarget(port, 4, a3);
+	s3 = SetTarget(port, 4, a3);
 	//Sleep(1000);
-	s5 = maestroSetTarget(port, 8, a5);
+	s5 = SetTarget(port, 8, a5);
 	//Sleep(1000); //10000 = 10 segundos 
-	s4 = maestroSetTarget(port, 6, a4);
+	s4 = SetTarget(port, 6, a4);
 	//Sleep(1000);
-	s1 = maestroSetTarget(port, 0, a1);
+	s1 = SetTarget(port, 0, a1);
 	//Sleep(1000);
-	s6 = maestroSetTarget(port, 10, 944);
+	s6 = SetTarget(port, 10, 944);
 	if (!s1 || !s2 || !s3 || !s4 || !s5) { return error; }
 
 	return 1;
@@ -167,19 +136,19 @@ int destination(port, a1, a2, a3, a4, a5,newq5) {
 
 	BOOL s1, s2, s3, s4, s5, s6;
 	char error = "Uno de los pulsos esta vacio";
-	s1 = maestroSetTarget(port, 0, a1 * 4);
-	s5 = maestroSetTarget(port, 8, newq5 * 4); // para poner la pinza siempre recta a la linea central.
+	s1 = SetTarget(port, 0, a1 * 4);
+	s5 = SetTarget(port, 8, newq5 * 4); // para poner la pinza siempre recta a la linea central.
 	//Sleep(1000);
-	s5 = maestroSetTarget(port, 8, a5 * 4); // se mueve los grados que debe. 
+	s5 = SetTarget(port, 8, a5 * 4); // se mueve los grados que debe. 
 	//Sleep(1000);
-	s4 = maestroSetTarget(port, 6, a4 * 4);
-	Sleep(1000);
-	s3 = maestroSetTarget(port, 4, a3 * 4);
+	s4 = SetTarget(port, 6, a4 * 4);
+	//Sleep(1000);
+	s3 = SetTarget(port, 4, a3 * 4);
 	//Sleep(1000);
 	Sleep(2300);
-	s2 = maestroSetTarget(port, 2, a2 * 4);
+	s2 = SetTarget(port, 2, a2 * 4);
 	Sleep(1500);
-	s6 = maestroSetTarget(port, 10, 1680 * 4); //1450
+	s6 = SetTarget(port, 10, 1680 * 4); //1450
 	Sleep(1000);
 	if (!s1 || !s2 || !s3 || !s4 || !s5) { return error; }
 
@@ -192,80 +161,59 @@ int unloading(port, lugar,a1) {
 	int tiempo = 0; 
 	char error = "Uno de los pulsos esta vacio";
 	// movimiento de s2 para arriba 
-	s2 = maestroSetTarget(port, 2, 1408 * 4);
+	s2 = SetTarget(port, 2, 1408 * 4);
 	Sleep(1200);
 	// left = 1 y right = 2 
 	// left == 2496 y right = 496 
 
 	// izq con descarga en derecha 
 	if(a1<1296 && lugar == 1){
-		tiempo = 4500;
+		tiempo = 2800;
 	}
 	// izq con descarga en izq 
 	if(a1<1296 && lugar == 2){
-		tiempo = 1800;
+		tiempo = 1000;
 	}
 
 	// derecha con descarga en derecha
 	if(a1>1696 && lugar == 1){
-		tiempo = 1800;
+		tiempo = 1000;
 	}
 	// derecha con descarga en izq
 	if(a1>1696 && lugar == 2){
-		tiempo = 4500;
+		tiempo = 2800;
 	}
 
 	if(a1>1296 && a1<1696){
-		tiempo = 3000;
+		tiempo = 1800;
 	}
-
-
-
-	// if(a1<1496 && lugar == 1){
-	// 	tiempo = 2000;
-	// }else{
-	// 	tiempo = 5000;
-	// }
-
-	// if(a1>1496 && lugar ==2){
-	// 	tiempo = 2000;
-	// }else{
-	// 	if(a1<1496 && lugar==2){
-	// 		tiempo = 5000;
-	// 	}
-	// }
-
-	// if(a1>1300 && a1<1600){
-	// 	tiempo = 6000;
-	// }
 
 	if (lugar ==1) {
 		// s1 para derecha  
-		s3 = maestroSetTarget(port, 4, 1480 * 4);
-		s1 = maestroSetTarget(port, 0, 2496 * 4);
-		s4 = maestroSetTarget(port, 6, 2427 * 4);
+		s3 = SetTarget(port, 4, 1480 * 4);
+		s1 = SetTarget(port, 0, 2496 * 4);
+		s4 = SetTarget(port, 6, 2427 * 4);
 		//Sleep(1000);
-		s5 = maestroSetTarget(port, 8, 920 * 4);
+		s5 = SetTarget(port, 8, 920 * 4);
 		Sleep(tiempo);
-		s6 = maestroSetTarget(port, 10, 944);
+		s6 = SetTarget(port, 10, 944);
 
 		return 1;
 	}
 	else {
 		// s2 para izquierda
-		s3 = maestroSetTarget(port, 4, 1507 * 4);
-		s1 = maestroSetTarget(port, 0, 496 * 4);
-		s4 = maestroSetTarget(port, 6, 2427 * 4);
-		s5 = maestroSetTarget(port, 8, 920 * 4);
+		s3 = SetTarget(port, 4, 1507 * 4);
+		s1 = SetTarget(port, 0, 496 * 4);
+		s4 = SetTarget(port, 6, 2427 * 4);
+		s5 = SetTarget(port, 8, 920 * 4);
 		Sleep(tiempo);
-		s6 = maestroSetTarget(port, 10, 944);
+		s6 = SetTarget(port, 10, 944);
 
 	 	return 1;
 	}
 
 	printf("Error en el parametro de lugar");
 }
-
 
 int main(int argc, char * argv[])
 {
@@ -312,11 +260,7 @@ int main(int argc, char * argv[])
 	destination(port, a1, a2, a3, a4, a5, newQ5); // para jenga  newq5 = 1868
 	unloading(port, descarga,a1); //para descargar 2 izquierda y 1 derecha. 
 	startrobot(port,inia1,inia2,inia3,inia4,inia5); 
-	
 
-
-	/* Close the serial port so other programs can use it.
-	 * Alternatively, you can just terminate the process (return from main). */
 	CloseHandle(port);
 
 	return 0;
