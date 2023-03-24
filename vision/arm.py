@@ -44,9 +44,14 @@ def solucion(x,y,z,orientacion): # dado x,y,z da los angulos y pulsos de cada ar
         q1 = q1-4.5
     elif(z==2):
         print("sin")
-        q1 = q1-4
+        q1 = q1-4.5
     elif(z==3):
         q1= q1 -1
+    elif(z==4):
+        q1 = q1-5 
+    elif(z==5):
+        q1 = q1-6
+        
 
     print("grado a1 despues: ")
     print(q1)

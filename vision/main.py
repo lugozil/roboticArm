@@ -24,6 +24,7 @@ vpc = utils.ViewPort()
 rgb_black = (0, 0, 0)
 rgb_white = (255, 255, 255)
 cent =[0,0]
+conteo = 0
 customtkinter.set_appearance_mode("dark")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
 
@@ -44,19 +45,19 @@ class App(customtkinter.CTk):
         self.geometry(str(420)+"x"+str(680)+"+"+str(pwidth)+"+"+str(pheight))
 
         # label and button
-        self.logo_label = customtkinter.CTkLabel(self, text="Sistema de Clasificación",justify=customtkinter.CENTER ,font=customtkinter.CTkFont(size=25, weight="bold"))
-        self.logo_label.place(x=63, y=20)
+        self.logo_label = customtkinter.CTkLabel(self, text="Classification System",justify=customtkinter.CENTER ,font=customtkinter.CTkFont(size=25, weight="bold"))
+        self.logo_label.place(x=70, y=20)
 
-        self.label_1 = customtkinter.CTkLabel(self, justify=customtkinter.CENTER,text="Ingrese cantidad de objetos:",font=customtkinter.CTkFont(size=15))
+        self.label_1 = customtkinter.CTkLabel(self, justify=customtkinter.CENTER,text="Enter number of items:",font=customtkinter.CTkFont(size=15))
         self.label_1.place(x=70, y=80)
 
         validate_entry = lambda text: text.isdecimal()
-        self.entry_1 = customtkinter.CTkEntry(self, placeholder_text="Nro de jengas",width=160,height=32,validate="key",validatecommand=(self.register(validate_entry), "%S"))
+        self.entry_1 = customtkinter.CTkEntry(self, placeholder_text="Number of jengas",width=160,height=32,validate="key",validatecommand=(self.register(validate_entry), "%S"))
         self.entry_1.place(x=70, y=120)
         self.campo1 = customtkinter.CTkLabel(self, justify=customtkinter.CENTER,text="*",font=customtkinter.CTkFont(size=12))
         self.campo1.place(x=240, y= 125)
 
-        self.label_2 = customtkinter.CTkLabel(self, justify=customtkinter.CENTER,text="Active los colores e indique el destino:",font=customtkinter.CTkFont(size=15))
+        self.label_2 = customtkinter.CTkLabel(self, justify=customtkinter.CENTER,text="Activate the colors and indicate the destination:",font=customtkinter.CTkFont(size=15))
         self.label_2.place(x=70, y=180)
         
         # Colores y destinos 
@@ -94,10 +95,10 @@ class App(customtkinter.CTk):
         self.segmented_button_5 = customtkinter.CTkSegmentedButton(self, values=["Left", "Right"])
         self.segmented_button_5.place(x=220, y=475)
 
-        self.checkbox_1 = customtkinter.CTkCheckBox(self, text= "Confirmar")
+        self.checkbox_1 = customtkinter.CTkCheckBox(self, text= "Confirm")
         self.checkbox_1.place(x=70, y=550)
         self.campo2 = customtkinter.CTkLabel(self, justify=customtkinter.CENTER,text="*",font=customtkinter.CTkFont(size=12))
-        self.campo2.place(x=165, y= 550)
+        self.campo2.place(x=158, y= 550)
 
         self.button_1 = customtkinter.CTkButton(self, command=self.event_button_start, text="Start",font=customtkinter.CTkFont(size=15))
         self.button_1.place(x=130, y=600)
@@ -105,7 +106,7 @@ class App(customtkinter.CTk):
         self.button_help = customtkinter.CTkButton(self, command=self.event_button_help, text="Help",width=50,height=25,font=customtkinter.CTkFont(size=12))
         self.button_help.place(x=280, y=550)
 
-        self.campo3 = customtkinter.CTkLabel(self, justify=customtkinter.CENTER,text="Campos obligatorios (*)",font=customtkinter.CTkFont(size=12))
+        self.campo3 = customtkinter.CTkLabel(self, justify=customtkinter.CENTER,text="Required fields (*)",font=customtkinter.CTkFont(size=12))
         self.campo3.place(x=270, y= 650)
 
         self.campo5 = customtkinter.CTkLabel(self, justify=customtkinter.CENTER,text="*",font=customtkinter.CTkFont(size=12))
@@ -128,8 +129,8 @@ class App(customtkinter.CTk):
                             " fisica  del  robot  esta   formada  con  5  eslabones,  6  servomotores, 1  pinza, 1  tarjeta de control Pololu 12 mini maestro, y su regulador de   5   voltios")
 
     def event_button_start(self):
-        if(self.entry_1.get()!='' and self.checkbox_1.get()==1 and (self.switch_1.get()==1 or self.switch_2.get()==1 or self.switch_3.get()==1) and 
-           (self.segmented_button_1.get()!='' or self.segmented_button_2.get()!='' or self.segmented_button_3.get()!='')):
+        if(self.entry_1.get()!='' and self.checkbox_1.get()==1 and (self.switch_1.get()==1 or self.switch_2.get()==1 or self.switch_3.get()==1 or self.switch_4.get()==1 or self.switch_5.get()==1) and 
+           (self.segmented_button_1.get()!='' or self.segmented_button_2.get()!='' or self.segmented_button_3.get()!='' or self.segmented_button_4.get()!='' or self.segmented_button_5.get()!='')):
             
                 self.cantidad = int(self.entry_1.get())
                 self.aux = 1
@@ -191,6 +192,10 @@ def new_corner(corner, num, x, y):
     return num 
 
 def diferencial(a,b):
+
+    if(b==0):
+        return 0
+    
     return ((b/a)*100)-100
 
 def search(color,array2):
@@ -199,8 +204,8 @@ def search(color,array2):
     #posicion = array.index('color')
     posicion = int(posiciones[0])
     destino = array2[posicion][1] # me da el destino
-    if(destino=='Left'): destino = 2
-    if(destino=='Right'):destino = 1
+    if(destino=='Left'): destino = 1
+    if(destino=='Right'):destino = 2
 
     return destino
 
@@ -209,8 +214,8 @@ def manage_agent(frame, hsv,array,centro):
     for color in utils.agent.keys(): # busca colores en los angentes
         for colores_activos in array: # 
             if color in colores_activos: # in colores_activos para buscar en toda la lista
-                destino = search(color,array) # jenga contiene el color,destino. 1 = right y 2 = left
-                is_agent = generate_mask(frame, hsv, color,centro,destino) # enviar color,colores_activos[0][1] u obtener la posicion donde consiguio el color y apartir de este enviarlo 
+                destino = search(color,array) 
+                is_agent = generate_mask(frame, hsv, color,centro,destino) 
                 if is_agent: 
                     centro = [is_agent.cx,is_agent.cy]
 
@@ -233,38 +238,42 @@ def radians2degrees(angle):
 
 def calibration(cx2,cy2,orientacion):
     aux = 0 
+    auxorientacion = 0
 # MODIFICACIONES PARA AJUSTAR ORIENTACION Y PRECISION DEL ROBOT SEGUN UBICACION FISICA (CALIBRACION)4
 #-----------------------------------------------------------------------------------------
 # Lado derecho 
 
-    if(cx2 > 0 and orientacion<=90.00): 
+    if(cx2 > 4.5 and orientacion<=90.00): 
         auxorientacion = orientacion
         orientacion = orientacion + 98
         print("entro aqui primero")
+        if(cx2<5): orientacion = orientacion +4
         aux = 1
-        if(cx2 > 0 and cy2>14 and auxorientacion > 25 and auxorientacion <70): 
+        if(cx2 > 2 and cy2>14 and auxorientacion > 25 and auxorientacion <70): 
             orientacion = orientacion + 4
         elif(cx2>12 and auxorientacion >0 and auxorientacion <25): 
             orientacion = orientacion - 6
             print("entro")
 
-    elif(cx2 > 0 and orientacion>90.00): # cx = cy pq esta invertido 
+    elif(cx2 > 4.5 and orientacion>90.00): # cx = cy pq esta invertido 
         auxorientacion = orientacion
         orientacion = orientacion - 82 
+        aux = 1
         print("entro aqui despues ")
-        aux = 1 
+        if(cx2>4.5 and cx2<6.5): aux = 5
+ 
         if(cx2 > 12 and orientacion > 0 and orientacion <25): 
             orientacion = orientacion -15 
         elif(cx2>10 and orientacion >25 and orientacion <50):
             orientacion = orientacion -9
             if(cx2>14): orientacion = orientacion - 14
-        elif(cx2>0 and cx2<9 and orientacion >50 and orientacion <70): 
+        elif(cx2>2 and cx2<9 and orientacion >50 and orientacion <70): 
             orientacion = orientacion +5
             print("alternativa4")
         elif(cx2>9 and orientacion >50 and orientacion <70): 
             orientacion = orientacion -21
             print("alternativa5")
-        elif(cx2>0 and cx2<10 and orientacion > 70 and orientacion < 100): 
+        elif(cx2>2 and cx2<10 and orientacion > 70 and orientacion < 100): 
             orientacion = orientacion +2
         elif(cx2>10 and orientacion >70 and orientacion <100): 
             orientacion = orientacion - 13
@@ -277,10 +286,11 @@ def calibration(cx2,cy2,orientacion):
 # ----------------------------------------------------------------------------------------
 # Lado izquierdo 
 
-    if(cx2 < 0 and orientacion>90.00): # Verificado 
+    if(cx2 < -4.5 and orientacion>90.00): # Verificado 
         orientacion = orientacion + 4  # cx = cy pq esta invertido
         aux = 2
         print("entra aqui alternativa 1")
+        if(cx2>-6): orientacion = orientacion - 19
         if(cx2 < -12.5 and orientacion >110.00 and orientacion < 160.00):
             orientacion = orientacion + 12
             aux = 3
@@ -293,13 +303,13 @@ def calibration(cx2,cy2,orientacion):
                 orientacion = 9
             if(cy2 >14):
                 orientacion = orientacion - 7
-        elif(cx2<0 and cx2 > -5 and orientacion>110): # acomodar 
+        elif(cx2<-4 and cx2 > -7 and orientacion>110): # acomodar 
             orientacion = orientacion -28
             print("NUEVO")
             
-    elif(cx2 < 0 and orientacion < 90.00): # Verificado
+    elif(cx2 < -4.5 and orientacion < 90.00): # Verificado
         aux = 2
-        orientacion = orientacion -3
+        orientacion = orientacion -4
         if(cx2 < -12.5 and orientacion >20.00 and orientacion < 70.00):
             orientacion = orientacion + 12
             aux = 3
@@ -309,7 +319,72 @@ def calibration(cx2,cy2,orientacion):
         if(cy2 > 14 and cx2 > -12.5 and orientacion >0 and orientacion <20.00):
             orientacion = orientacion -5
             print("entro a esta alternativa ")
+            if(cx2>-6.5): ((orientacion -10)*-1) +95
  
+# Centro 
+    if(cx2>-4.5 and cx2<1 and orientacion >=90): 
+        auxorientacion = orientacion 
+        orientacion = orientacion - 28
+        if(auxorientacion>90 and auxorientacion<115): orientacion = orientacion-11
+        aux = 2
+        if(cx2<1.5 and cx2>-1.5): 
+            orientacion = orientacion -11
+            aux = 4
+            print("Bandera 1")
+        if(auxorientacion >=115 and auxorientacion <=160):
+            orientacion = orientacion - 7
+        elif(auxorientacion >160 and auxorientacion <=180):
+            orientacion = orientacion -4
+
+# -----------------------------------------------------------
+
+    elif(cx2>-4.5 and cx2<1 and orientacion <90):
+        auxorientacion = orientacion
+        orientacion = orientacion -37 
+        aux = 2
+        print("Bandera 2")
+
+        if(auxorientacion>=30 and auxorientacion<=70):
+            orientacion = orientacion 
+            print("C 0")
+        elif(auxorientacion>0 and auxorientacion<30):
+            orientacion = orientacion - 36
+            if(auxorientacion<15):
+                orientacion = ((orientacion -10 ) *-1)+93 
+                print("Bandera 3")
+
+# clasificacion del medio cuando cx2 > 1 hasta cx2<3.5
+    if(cx2>1 and cx2<4.5 and orientacion >=90): 
+        aux = 4
+        auxorientacion = orientacion
+        orientacion = orientacion -50         
+        print("derecho 1")
+
+        # if(auxorientacion>=90 and auxorientacion<=110):
+        #     orientacion = orientacion -40
+        #     print("D22")
+    elif(cx2>1 and cx2<4.5 and auxorientacion>110 and auxorientacion<155): 
+        orientacion = orientacion +3
+        print("D23")
+    elif(cx2>1 and cx2<4.5 and auxorientacion>=155 and orientacion <180):
+        orientacion = orientacion -4
+        print("d24")
+
+# ---------------------------------------------------------------------------------------------------
+    elif(cx2>1 and cx2<4.5 and orientacion <90):
+        auxorientacion = orientacion
+        orientacion = orientacion - 51
+        aux = 2 
+        print("d25")
+        if(auxorientacion>25 and auxorientacion<70):
+            orientacion = orientacion -21
+            print("d26")
+        elif(auxorientacion>0 and auxorientacion<=25): 
+            orientacion = ((orientacion-10)*-1) +95
+            print("27")
+
+
+
     return orientacion,aux
 
 def drawAxis(img, p_, q_, color, scale):
@@ -480,14 +555,20 @@ def generate_mask(frame, hsv, color,centro,destino):
 
                     #COMPROBAR QUE ME LLEGAN PARAMETROS DIFERENTES 
                     print("PARAMETROS")
-                    difx = diferencial(cy2,centro[0])
-                    dify = diferencial(cx2,centro[1])
+                    if(cy2>1 and cy2<-1):
+                        difx = diferencial(cy2,centro[0])
+                        dify = diferencial(cx2,centro[1])
+                    else: 
+                        difx = 3 
+                        dify = 3 
+                    
                     print(color)
                     print(difx,dify)
 
 
-                    if((difx>2 or difx<-1) and (dify>2 or dify<-2)): # si no es la posicion del ultimo jenga, ejecuta. 
-
+                    if((difx>2 or difx<-1) and (dify>2 or dify<-2) and cy2>3): # si no es la posicion del ultimo jenga, ejecuta. 
+                        global conteo 
+                        conteo = conteo+1
                         # Calibracion del robot segun su posicion fisica. 
                         orientacion, aux = calibration(cx2,cy2,orientacion)
                 
@@ -508,7 +589,7 @@ def generate_mask(frame, hsv, color,centro,destino):
                         # 
                     new_agent.set_values(cy2, cx2, orientacion,aux) # x,y,orientacion 
                     #print(new_agent.cx)
-                    time.sleep(10)
+                    time.sleep(14)
                     
                     # create agent in the world
                     global agent  
@@ -524,9 +605,7 @@ def generate_mask(frame, hsv, color,centro,destino):
 
 def main():
     sg.theme('Black')
-    # create the window and show it without the plot
     window = sg.Window('LUBOT', main_layout(), element_justification='c', location=(350, 100))
-    #indicates which camera use
     cap = cv2.VideoCapture(0)
     recording = False
     app = App()
@@ -536,25 +615,18 @@ def main():
     # Event loop that reads and displays frames 
     while True:
         event, _ = window.read(timeout=20) 
-        
-        # if event == 'Exit' or event == sg.WIN_CLOSED:
-        #     if recording:
-        #         cap.release()
-        #     return
-        if app.aux != 1 or app.aux==None or event == sg.WIN_CLOSED: # No presiono start  app.aux != 1 or app.aux==None or event == sg.WIN_CLOSED:
+        if app.aux != 1 or app.aux==None or event == sg.WIN_CLOSED: 
             if recording:
                 cap.release()
                 recording = False
             return 
         elif app.aux == 1: # Presiono start correctamente  app.aux == 1:
             recording = True
-        
-        # elif event == 'Start': 
-        #     recording = True 
+
         if recording: 
             cap.set(cv2.CAP_PROP_AUTOFOCUS, 0) # turn the camera autofocus off
             _, frame = cap.read() 
-            # converting image obtained to hsv, if exists
+
             if frame is None:
                 print('Something went wrong trying to connect to your camera. Please verify.')
                 return
@@ -565,7 +637,7 @@ def main():
             region = pool.apply_async(generate_mask, (frame, hsv, 'black',centro,destino))
             region = region.get()  
             if region: 
-                # print(region) 
+
                 min_corner, max_corner = region # min corner tiene x.y minimo en pixeles, maxconer tiene x.y maximo en pixeles
 
                 # define vpc values
@@ -582,19 +654,16 @@ def main():
                     y1 = 10.5
                     x2, y2 = utils.w2vp(x1,y1, vpc)
 
-                    #cv2.circle(frame,(int(centro[0]),int(centro[1])),5,(rgb_black),-1)
-
                     area_trabajo(frame ,min_corner ,max_corner, x2)
                     # 
                     # call to function to detect objects 
-                    global cent
+                    global cent,conteo
                     resultado,centro = manage_agent(frame, hsv,app.array,cent) 
                     cent = [centro[0],centro[1]]
-                    #if(resultado == 0 and app.cantidad==i): break; # salir del ciclo while cuando ya haya llamado la misma cantidad
-                    #else: i = i+1 
-            
-                    
-                    
+
+                    if(conteo==app.cantidad): # si ya se clasificaron la misma cantidad de jengas seleccionado, rompe y cierra el programa
+                        break
+                              
             #process image from camera
             imgbytes = cv2.imencode('.png', frame)[1].tobytes()            
             window['image'].update(data=imgbytes)
