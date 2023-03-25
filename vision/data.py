@@ -1,7 +1,3 @@
-
-# constants
-# colors in hsv dict for masks. the first value represents the lower limit and the second the lower
-# Jenga hace referencia a los jengas marrones y Uno hace referencia a los jengas de Uno.( colores)
 HSV_COLORS = {
 
     'black': [[0, 0, 21], [179,255,87]], # real

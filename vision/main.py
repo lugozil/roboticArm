@@ -11,20 +11,14 @@ from multiprocessing.pool import ThreadPool
 import os 
 import time 
 import customtkinter
-import tkinter 
 from tkinter import messagebox
 
-
 pool = ThreadPool(processes=1)
-
 # # viewport for camera
 vpc = utils.ViewPort()
-
 # rgb colors for opencv
-rgb_black = (0, 0, 0)
-rgb_white = (255, 255, 255)
-cent =[0,0]
-conteo = 0
+rgb_black,rgb_white, cent, conteo= (0, 0, 0), (255, 255, 255), [0,0], 0
+
 customtkinter.set_appearance_mode("dark")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
 
@@ -188,24 +182,23 @@ def centroid(count):
 def new_corner(corner, num, x, y):
     corner.append(x)
     corner.append(y)
-    num = num + 1
+    num+=1
     return num 
 
 def diferencial(a,b):
-
     if(b==0):
-        return 0
-    
+        return 0 
     return ((b/a)*100)-100
 
 def search(color,array2):
     lista = np.array(array2)
     posiciones = np.where(lista == color)
-    #posicion = array.index('color')
     posicion = int(posiciones[0])
     destino = array2[posicion][1] # me da el destino
-    if(destino=='Left'): destino = 1
-    if(destino=='Right'):destino = 2
+    if(destino=='Left'): 
+        destino = 1
+    else:
+        destino = 2
 
     return destino
 
@@ -219,7 +212,7 @@ def manage_agent(frame, hsv,array,centro):
                 if is_agent: 
                     centro = [is_agent.cx,is_agent.cy]
 
-    return 0,centro 
+    return centro 
 
 def pixelesextremos(corner1,corner2):
     aux1 = corner1[0]+corner1[1] 
@@ -229,23 +222,18 @@ def pixelesextremos(corner1,corner2):
     else: 
         return corner1,corner2 
 
-def angulos_pulsos(z,min_prev,max_prev,max_new,min_new): 
-    return round(((((z-min_prev)/(max_prev-min_prev))*(max_new-min_new))+min_new),2)
-
 def radians2degrees(angle):
-    degrees = angle * 180 / math.pi
-    return round(degrees, 2)
+    return round((angle * 180 / math.pi), 2)
 
 def calibration(cx2,cy2,orientacion):
-    aux = 0 
-    auxorientacion = 0
+    aux = auxorientacion = 0 
 # MODIFICACIONES PARA AJUSTAR ORIENTACION Y PRECISION DEL ROBOT SEGUN UBICACION FISICA (CALIBRACION)4
 #-----------------------------------------------------------------------------------------
 # Lado derecho 
 
     if(cx2 > 4.5 and orientacion<=90.00): 
         auxorientacion = orientacion
-        orientacion = orientacion + 98
+        orientacion+=98
         print("entro aqui primero")
         if(cx2<5): orientacion = orientacion +4
         aux = 1
@@ -279,10 +267,6 @@ def calibration(cx2,cy2,orientacion):
             orientacion = orientacion - 13
             print("entro aqui ? ")
 
-    # arreglo 
-    # if(cx2 < 3 and orientacion<90.00): 
-    #     orientacion = orientacion + 100
-    #     print("entro aqui primero negativo")
 # ----------------------------------------------------------------------------------------
 # Lado izquierdo 
 
@@ -387,31 +371,8 @@ def calibration(cx2,cy2,orientacion):
 
     return orientacion,aux
 
-def drawAxis(img, p_, q_, color, scale):
-  p = list(p_)
-  q = list(q_)
- 
-  ## [visualization1]
-  angle = math.atan2(p[1] - q[1], p[0] - q[0]) # angle in radians
-  hypotenuse = math.sqrt((p[1] - q[1]) * (p[1] - q[1]) + (p[0] - q[0]) * (p[0] - q[0]))
- 
-  # Here we lengthen the arrow by a factor of scale
-  q[0] = p[0] - scale * hypotenuse * math.cos(angle)
-  q[1] = p[1] - scale * hypotenuse * math.sin(angle)
-  cv2.line(img, (int(p[0]), int(p[1])), (int(q[0]), int(q[1])), color, 3, cv2.LINE_AA)
- 
-  # create the arrow hooks
-  p[0] = q[0] + 9 * math.cos(angle + math.pi / 4)
-  p[1] = q[1] + 9 * math.sin(angle + math.pi / 4)
-  cv2.line(img, (int(p[0]), int(p[1])), (int(q[0]), int(q[1])), color, 3, cv2.LINE_AA)
- 
-  p[0] = q[0] + 9 * math.cos(angle - math.pi / 4)
-  p[1] = q[1] + 9 * math.sin(angle - math.pi / 4)
-  cv2.line(img, (int(p[0]), int(p[1])), (int(q[0]), int(q[1])), color, 3, cv2.LINE_AA)
-  ## [visualization1]
-
 def getOrientation(pts, img):
-  ## [pca]
+
   # Construct a buffer used by the pca analysis
   sz = len(pts)
   data_pts = np.empty((sz, 2), dtype=np.float64)
@@ -422,26 +383,7 @@ def getOrientation(pts, img):
   # Perform PCA analysis
   mean = np.empty((0))
   mean, eigenvectors, eigenvalues = cv2.PCACompute2(data_pts, mean)
- 
-  # Store the center of the object
-  cntr = (int(mean[0,0]), int(mean[0,1]))
-  ## [pca]
- 
-  ## [visualization]
-  # Draw the principal components
-  cv2.circle(img, cntr, 3, (255, 0, 255), 2)
-  p1 = (cntr[0] + 0.02 * eigenvectors[0,0] * eigenvalues[0,0], cntr[1] + 0.02 * eigenvectors[0,1] * eigenvalues[0,0])
-  p2 = (cntr[0] - 0.02 * eigenvectors[1,0] * eigenvalues[1,0], cntr[1] - 0.02 * eigenvectors[1,1] * eigenvalues[1,0])
-  drawAxis(img, cntr, p1, (255, 255, 0), 1)
-  drawAxis(img, cntr, p2, (0, 0, 255), 5)
- 
   angle = math.atan2(eigenvectors[0,1], eigenvectors[0,0]) # orientation in radians
-  ## [visualization]
- 
-  # Label with the rotation angle
-  label = "  Rotation Angle: " + str(-int(np.rad2deg(angle)) - 90) + " degrees"
-  textbox = cv2.rectangle(img, (cntr[0], cntr[1]-25), (cntr[0] + 250, cntr[1] + 10), (255,255,255), -1)
-  cv2.putText(img, label, (cntr[0], cntr[1]), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,0), 1, cv2.LINE_AA)
   orientacion = radians2degrees(angle)
   if orientacion < 0: 
     orientacion = orientacion + 180 
@@ -451,28 +393,17 @@ def getOrientation(pts, img):
 def draw_half_circle_no_round(image):
     height, width = image.shape[0:2]
     # Ellipse parameters
-    radius = 100
+    radius, angle, startAngle, endAngle, thickness = 100, 0, 180, 360, -1
     center = (width / 2, height - 25)
     axes = (radius, radius)
-    angle = 0
-    startAngle = 180
-    endAngle = 360
-    # When thickness == -1 -> Fill shape
-    thickness = -1
-
-    # Draw black half circle
     cv2.ellipse(image, center, axes, angle, startAngle, endAngle, rgb_black, thickness)
-
-    axes = (radius - 10, radius - 10)
-    # Draw a bit smaller white half circle
-    #cv2.ellipse(image, center, axes, angle, startAngle, endAngle, WHITE, thickness)
 
 def area_trabajo(frame ,min_corner ,max_corner, x2):
     centro = [x2,min_corner[1]]
     medida = centro[0] - min_corner[0]
     axes = (int(medida),int(medida))
-    angle, startAngle =0,0;
-    endAngle=-180;
+    angle, startAngle =0,0
+    endAngle=-180
     center=(int(centro[0]),int(centro[1]))
 
     cv2.ellipse(frame, center, axes, angle, startAngle, endAngle, rgb_black,2)
@@ -484,14 +415,9 @@ def generate_mask(frame, hsv, color,centro,destino):
     mask = cv2.inRange(hsv, np.array(data.HSV_COLORS[color][0]), np.array(data.HSV_COLORS[color][1])) 
     contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     #variables to define the rectangle of viewport
-    num_corner = 0
-    corner1 = []
-    corner2 = []
-    lista = []
-    newQ5 = 0
-    out = 0
-
-    global band, min_prev, max_prev 
+    num_corner,newQ5,out = 0, 0, 0
+    corner1,corner2 = [],[] 
+    global min_prev, max_prev 
 
     for count in contours:  
         # using functions to get the contour of shapes
@@ -499,7 +425,7 @@ def generate_mask(frame, hsv, color,centro,destino):
         approx = cv2.approxPolyDP(count, epsilon, True)
         # get area to work with only visible objects solware y can cat 
         area = cv2.contourArea(count)
-        if area > 150: # 50
+        if area > 150: 
             # recognize rectangles 
             if len(approx) == 4 and color == 'black': 
                 # computes the centroid of shapes 
@@ -516,23 +442,20 @@ def generate_mask(frame, hsv, color,centro,destino):
                     #draw_half_circle_no_round(frame)
                     return corner1, corner2
                 elif num_corner == 2:
-                    # reset values
                     corner1 = corner2 = []
                     num_corner = 0
             elif len(approx) == 4 and color !='black' and area>1000:
-                flag = 0
+                flag = i = aux = 0
                 n = approx.ravel()
-                i = 0
-                aux = 0
-                vx_coord = []
-                vy_coord = []
+                vx_coord =  vy_coord =[]
+
                 for j in n :
                     if(i % 2 == 0):
                         x = n[i]
                         y = n[i + 1] 
                         # this verifies that every vertex is in the region of the viewport 
                         if (vpc.u_max > x > vpc.u_min) and (vpc.v_min > y > vpc.v_max):
-                            flag = flag + 1  
+                            flag+= 1  
                             vx_coord.append(x)
                             vy_coord.append(y)
                             # coordenadas de cada vertice
@@ -547,57 +470,47 @@ def generate_mask(frame, hsv, color,centro,destino):
                     cv2.circle(frame,(int(cx),int(cy)),3,(rgb_white),-1)
                     # convert position (cx cy) and (vx, vy) to world coordinates        
                     cx2, cy2 = utils.vp2w(cx, cy, vpc) # manda centroide de objetos en pixeles
-                    print("Posicion real: "+str(cy2)+" "+str(cx2)) # 8 y 9 s
-                    # frame y count 
+                    #print("Posicion real: "+str(cy2)+" "+str(cx2)) # 8 y 9 s
                     # Find the orientation of each shape
                     orientacion = getOrientation(count, frame)
-                    print("Orientacion antes de pulsos: ")
-                    print(orientacion)
+                    # print("Orientacion antes de pulsos: ")
+                    # print(orientacion)
 
                     #COMPROBAR QUE ME LLEGAN PARAMETROS DIFERENTES 
-                    print("PARAMETROS")
+                    # print("PARAMETROS")
                     if(cy2>1 and cy2<-1):
                         difx = diferencial(cy2,centro[0])
                         dify = diferencial(cx2,centro[1])
                     else: 
-                        difx = 3 
-                        dify = 3 
+                        difx = dify =3 
                     
-                    print(color)
-                    print(difx,dify)
-                    if(cx2<4 and cx2>-4 and cy2<4):
-                        out = 1
-
+                    # print(color)
+                    # print(difx,dify)
+                    if(cx2<4 and cx2>-4 and cy2<4): out = 1
 
                     if((difx>2 or difx<-1) and (dify>2 or dify<-2) and out!=1): # si no es la posicion del ultimo jenga, ejecuta. 
                         # Calibracion del robot segun su posicion fisica. 
-                        orientacion, aux = calibration(cx2,cy2,orientacion)
-                
-                        print("Orientacion modificada: "+str(orientacion))
+                        orientacion, aux = calibration(cx2,cy2,orientacion)                
+                        #print("Orientacion modificada: "+str(orientacion))
                         # INGRESA FUNCION PARA TRANSFORMAR A PULSOS Y GUARDAR EN ARRAY 
                         #se invierte, para tener y como negativo y x como positivo 
                         pulsos,newQ5 = arm.solucion(cy2,cx2,aux,orientacion)
                         if(newQ5!=0):
                             global conteo 
                             conteo = conteo+1
-                            print("llamado de pulsos: ")
-                            print(pulsos,newQ5)
+                            # print("llamado de pulsos: ")
+                            # print(pulsos,newQ5)
                             # INGRESA FUNCION DE C++ PARA ENVIAR EL ARRAY CON LOS PULSOS 
                             command_1 = 'gcc pololu.c -o myprog'    
                             os.system(command_1)
                             command_2 = 'start myprog ' +str(pulsos[0])+' '+str(pulsos[1])+' '+str(pulsos[2])+' '+str(pulsos[3]) +' '+str(pulsos[4]) +' '+str(destino)+' '+str(newQ5)
                             os.system(command_2)
-                            time.sleep(10)
-                                # 
+                            time.sleep(11)
                             new_agent.set_values(cy2, cx2, orientacion,aux) # x,y,orientacion 
-                            #print(new_agent.cx)
-                
-                    
-                            # create agent in the world
+
                             global agent  
                             utils.agent[color] = new_agent 
-                            min_prev = [] 
-                            max_prev = [] 
+                            min_prev = max_prev = []
                             return new_agent # retorna a 
                         
                     new_agent.set_values(0,0,0,0)
@@ -636,8 +549,7 @@ def main():
                 return
             else:
                 hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV) 
-            centro = [0,0]
-            destino = 0
+            centro, destino = [0,0], 0
             region = pool.apply_async(generate_mask, (frame, hsv, 'black',centro,destino))
             region = region.get()  
             if region: 
@@ -662,7 +574,7 @@ def main():
                     # 
                     # call to function to detect objects 
                     global cent,conteo
-                    resultado,centro = manage_agent(frame, hsv,app.array,cent) 
+                    centro = manage_agent(frame, hsv,app.array,cent) 
                     cent = [centro[0],centro[1]]
 
                     if(conteo==app.cantidad): # si ya se clasificaron la misma cantidad de jengas seleccionado, rompe y cierra el programa

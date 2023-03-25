@@ -118,13 +118,9 @@ int startrobot(port, a1, a2, a3, a4, a5) {
 	s2 = SetTarget(port, 2, a2);
 	Sleep(1000);
 	s3 = SetTarget(port, 4, a3);
-	//Sleep(1000);
 	s5 = SetTarget(port, 8, a5);
-	//Sleep(1000); //10000 = 10 segundos 
 	s4 = SetTarget(port, 6, a4);
-	//Sleep(1000);
 	s1 = SetTarget(port, 0, a1);
-	//Sleep(1000);
 	s6 = SetTarget(port, 10, 944);
 	if (!s1 || !s2 || !s3 || !s4 || !s5) { return error; }
 
@@ -138,13 +134,9 @@ int destination(port, a1, a2, a3, a4, a5,newq5) {
 	char error = "Uno de los pulsos esta vacio";
 	s1 = SetTarget(port, 0, a1 * 4);
 	s5 = SetTarget(port, 8, newq5 * 4); // para poner la pinza siempre recta a la linea central.
-	//Sleep(1000);
 	s5 = SetTarget(port, 8, a5 * 4); // se mueve los grados que debe. 
-	//Sleep(1000);
 	s4 = SetTarget(port, 6, a4 * 4);
-	//Sleep(1000);
 	s3 = SetTarget(port, 4, a3 * 4);
-	//Sleep(1000);
 	Sleep(2300);
 	s2 = SetTarget(port, 2, a2 * 4);
 	Sleep(1500);
@@ -163,8 +155,7 @@ int unloading(port, lugar,a1) {
 	// movimiento de s2 para arriba 
 	s2 = SetTarget(port, 2, 1408 * 4);
 	Sleep(1200);
-	// left = 1 y right = 2 
-	// left == 2496 y right = 496 
+	// left = 1 (2496) y right = 2 (496)
 
 	// izq con descarga en derecha 
 	if(a1<1296 && lugar == 1){
@@ -231,12 +222,7 @@ int main(int argc, char * argv[])
 	unsigned short inia1, inia2, inia3, inia4, inia5, inia6 = 0;
 
 	// initial position of the robot
-	inia1 = 1496 * 4; 
-	inia2 = 1408 * 4; 
-	inia3 = 1507 * 4; 
-	inia4 = 2464 * 4; 
-	inia5 = 920 * 4; // 973
-	inia6 = 900 * 4; 
+	inia1 = 1496 * 4; inia2 = 1408 * 4; inia3 = 1507 * 4; inia4 = 2464 * 4; inia5 = 920 * 4; inia6 = 900 * 4; 
 
 	a1= (int) strtol(argv[1], NULL, 10); // pulso1
 	a2= (int) strtol(argv[2], NULL, 10); // pulso2 
@@ -254,9 +240,7 @@ int main(int argc, char * argv[])
 	if (port == INVALID_HANDLE_VALUE){ return 0; }
 
 	startrobot(port,inia1,inia2,inia3,inia4,inia5);
-
 	success = 0; 
-
 	destination(port, a1, a2, a3, a4, a5, newQ5); // para jenga  newq5 = 1868
 	unloading(port, descarga,a1); //para descargar 2 izquierda y 1 derecha. 
 	startrobot(port,inia1,inia2,inia3,inia4,inia5); 
