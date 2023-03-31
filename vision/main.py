@@ -228,146 +228,110 @@ def radians2degrees(angle):
 def calibration(cx2,cy2,orientacion):
     aux = auxorientacion = 0 
 # MODIFICACIONES PARA AJUSTAR ORIENTACION Y PRECISION DEL ROBOT SEGUN UBICACION FISICA (CALIBRACION)4
-#-----------------------------------------------------------------------------------------
-# Lado derecho 
 
+# Right
     if(cx2 > 4.5 and orientacion<=90.00): 
         auxorientacion = orientacion
-        orientacion+=98
-        print("entro aqui primero")
-        if(cx2<5): orientacion = orientacion +4
+        orientacion +=98
         aux = 1
-        if(cx2 > 2 and cy2>14 and auxorientacion > 25 and auxorientacion <70): 
-            orientacion = orientacion + 4
-        elif(cx2>12 and auxorientacion >0 and auxorientacion <25): 
-            orientacion = orientacion - 6
-            print("entro")
+        print("BANDERA: 1")
+        if(cx2<5): orientacion += 4
+        if(cx2 > 2 and cy2>14 and auxorientacion > 25 and auxorientacion <70): orientacion +=4
+        elif(cx2>12 and auxorientacion >0 and auxorientacion <25): orientacion -=6
 
     elif(cx2 > 4.5 and orientacion>90.00): # cx = cy pq esta invertido 
         auxorientacion = orientacion
-        orientacion = orientacion - 82 
+        orientacion -=82 
         aux = 1
-        print("entro aqui despues ")
+        print("BANDERA: 2")
         if(cx2>4.5 and cx2<6.5): aux = 5
- 
-        if(cx2 > 12 and orientacion > 0 and orientacion <25): 
-            orientacion = orientacion -15 
+        if(cx2 > 12 and orientacion > 0 and orientacion <25): orientacion -=15 
         elif(cx2>10 and orientacion >25 and orientacion <50):
-            orientacion = orientacion -9
-            if(cx2>14): orientacion = orientacion - 14
-        elif(cx2>2 and cx2<9 and orientacion >50 and orientacion <70): 
-            orientacion = orientacion +5
-            print("alternativa4")
-        elif(cx2>9 and orientacion >50 and orientacion <70): 
-            orientacion = orientacion -21
-            print("alternativa5")
-        elif(cx2>2 and cx2<10 and orientacion > 70 and orientacion < 100): 
-            orientacion = orientacion +2
-        elif(cx2>10 and orientacion >70 and orientacion <100): 
-            orientacion = orientacion - 13
-            print("entro aqui ? ")
+            orientacion -=9
+            if(cx2>14): orientacion -=14
+        elif(cx2>2 and cx2<9 and orientacion >50 and orientacion <70): orientacion +=5
+        elif(cx2>9 and orientacion >50 and orientacion <70): orientacion -=21
+        elif(cx2>2 and cx2<10 and orientacion > 70 and orientacion < 100): orientacion +=2
+        elif(cx2>10 and orientacion >70 and orientacion <100): orientacion -=13
 
-# ----------------------------------------------------------------------------------------
-# Lado izquierdo 
-
-    if(cx2 < -4.5 and orientacion>90.00): # Verificado 
-        orientacion = orientacion + 4  # cx = cy pq esta invertido
+# Left
+    if(cx2 < -4.5 and orientacion>90.00):  
+        orientacion +=4  # cx = cy pq esta invertido
         aux = 2
-        print("entra aqui alternativa 1")
-        if(cx2>-6): orientacion = orientacion - 19
+        print("BANDERA: 3")
+        if(cx2>-6): orientacion -=19
         if(cx2 < -12.5 and orientacion >110.00 and orientacion < 160.00):
-            orientacion = orientacion + 12
+            orientacion +=12
             aux = 3
-        elif(cx2 > -12.5 and orientacion >110.00 and orientacion < 165.00):
-            orientacion = orientacion - 7
+        elif(cx2 > -12.5 and orientacion >110.00 and orientacion < 165.00): orientacion -=7
         elif(cx2 < -12.5 and orientacion > 165 and orientacion < 180):
-            orientacion = orientacion + 12
+            orientacion +=12
             aux = 3
-            if(orientacion > 180): # para que el robot se mueva en la otra orientacion. 
-                orientacion = 9
-            if(cy2 >14):
-                orientacion = orientacion - 7
-        elif(cx2<-4 and cx2 > -7 and orientacion>110): # acomodar 
-            orientacion = orientacion -28
-            print("NUEVO")
+            if(orientacion > 180): orientacion = 9
+            if(cy2 >14):orientacion -=7
+        elif(cx2<-4 and cx2 > -7 and orientacion>110): orientacion -=28
             
-    elif(cx2 < -4.5 and orientacion < 90.00): # Verificado
+    elif(cx2 < -4.5 and orientacion < 90.00): 
+        print("BANDERA: 4")
         aux = 2
-        orientacion = orientacion -4
+        orientacion -=4
         if(cx2 < -12.5 and orientacion >20.00 and orientacion < 70.00):
-            orientacion = orientacion + 12
+            orientacion +=12
             aux = 3
         elif(cx2< -12.5 and orientacion > 0 and orientacion < 20.00):
-            orientacion = orientacion + 12 
+            orientacion +=12 
             aux = 3
         if(cy2 > 14 and cx2 > -12.5 and orientacion >0 and orientacion <20.00):
-            orientacion = orientacion -5
-            print("entro a esta alternativa ")
+            orientacion -=5
             if(cx2>-6.5): ((orientacion -10)*-1) +95
  
-# Centro 
+# Center
     if(cx2>-4.5 and cx2<1 and orientacion >=90): 
+        print("BANDERA: 5")
         auxorientacion = orientacion 
-        orientacion = orientacion - 28
-        if(auxorientacion>90 and auxorientacion<115): orientacion = orientacion-11
+        orientacion -=28
         aux = 2
+        if(auxorientacion>90 and auxorientacion<115): orientacion -=11
         if(cx2<1.5 and cx2>-1.5): 
-            orientacion = orientacion -11
+            orientacion -=11
             aux = 4
-            print("Bandera 1")
-        if(auxorientacion >=115 and auxorientacion <=160):
-            orientacion = orientacion - 7
-        elif(auxorientacion >160 and auxorientacion <=180):
-            orientacion = orientacion -4
-
-# -----------------------------------------------------------
+        if(auxorientacion >=115 and auxorientacion <=160): orientacion -=7
+        elif(auxorientacion >160 and auxorientacion <=180): orientacion -=4
 
     elif(cx2>-4.5 and cx2<1 and orientacion <90):
+        print("BANDERA: 6")
         auxorientacion = orientacion
-        orientacion = orientacion -37 
+        orientacion -=37 
         aux = 2
-        print("Bandera 2")
-
         if(auxorientacion>=30 and auxorientacion<=70):
             orientacion = orientacion 
             print("C 0")
         elif(auxorientacion>0 and auxorientacion<30):
-            orientacion = orientacion - 36
+            orientacion -=36
             if(auxorientacion<15):
                 orientacion = ((orientacion -10 ) *-1)+93 
                 print("Bandera 3")
 
 # clasificacion del medio cuando cx2 > 1 hasta cx2<3.5
     if(cx2>1 and cx2<4.5 and orientacion >=90): 
+        print("BANDERA: 7")
         aux = 6
         auxorientacion = orientacion
-        orientacion = orientacion -50         
+        orientacion -=50         
         print("derecho 1")
+    elif(cx2>1 and cx2<4.5 and auxorientacion>110 and auxorientacion<155): orientacion +=3
+    elif(cx2>1 and cx2<4.5 and auxorientacion>=155 and orientacion <180): orientacion -=4
 
-        # if(auxorientacion>=90 and auxorientacion<=110):
-        #     orientacion = orientacion -40
-        #     print("D22")
-    elif(cx2>1 and cx2<4.5 and auxorientacion>110 and auxorientacion<155): 
-        orientacion = orientacion +3
-        print("D23")
-    elif(cx2>1 and cx2<4.5 and auxorientacion>=155 and orientacion <180):
-        orientacion = orientacion -4
-        print("d24")
-
-# ---------------------------------------------------------------------------------------------------
     elif(cx2>1 and cx2<4.5 and orientacion <90):
+        print("BANDERA: 8")
         auxorientacion = orientacion
-        orientacion = orientacion - 51
+        orientacion -=51
         aux = 2 
-        print("d25")
-        if(auxorientacion>25 and auxorientacion<70):
-            orientacion = orientacion -21
-            print("d26")
-        elif(auxorientacion>0 and auxorientacion<=25): 
-            orientacion = ((orientacion-10)*-1) +95
-            print("27")
+        if(auxorientacion>25 and auxorientacion<70): orientacion -=21
+        elif(auxorientacion>0 and auxorientacion<=25): orientacion = ((orientacion-10)*-1) +95
 
-
+    print(orientacion)
+    time.sleep(10)
 
     return orientacion,aux
 
@@ -402,8 +366,7 @@ def area_trabajo(frame ,min_corner ,max_corner, x2):
     centro = [x2,min_corner[1]]
     medida = centro[0] - min_corner[0]
     axes = (int(medida),int(medida))
-    angle, startAngle =0,0
-    endAngle=-180
+    angle, startAngle,endAngle =0,0,-180
     center=(int(centro[0]),int(centro[1]))
 
     cv2.ellipse(frame, center, axes, angle, startAngle, endAngle, rgb_black,2)
@@ -464,54 +427,43 @@ def generate_mask(frame, hsv, color,centro,destino):
                     i = i + 1
                 if flag == 4:  
                     cv2.drawContours(frame, [approx], 0, (0), 2)
-                    new_agent = utils.Agent(color) # guardo el color detectado en new_agent 
+                    new_agent = utils.Agent(color) 
                     # computes the centroid   
                     cx, cy = centroid(count)
                     cv2.circle(frame,(int(cx),int(cy)),3,(rgb_white),-1)
                     # convert position (cx cy) and (vx, vy) to world coordinates        
-                    cx2, cy2 = utils.vp2w(cx, cy, vpc) # manda centroide de objetos en pixeles
-                    #print("Posicion real: "+str(cy2)+" "+str(cx2)) # 8 y 9 s
+                    cx2, cy2 = utils.vp2w(cx, cy, vpc) 
                     # Find the orientation of each shape
                     orientacion = getOrientation(count, frame)
-                    # print("Orientacion antes de pulsos: ")
-                    # print(orientacion)
 
                     #COMPROBAR QUE ME LLEGAN PARAMETROS DIFERENTES 
-                    # print("PARAMETROS")
                     if(cy2>1 and cy2<-1):
                         difx = diferencial(cy2,centro[0])
                         dify = diferencial(cx2,centro[1])
                     else: 
                         difx = dify =3 
                     
-                    # print(color)
-                    # print(difx,dify)
                     if(cx2<4 and cx2>-4 and cy2<4): out = 1
 
                     if((difx>2 or difx<-1) and (dify>2 or dify<-2) and out!=1): # si no es la posicion del ultimo jenga, ejecuta. 
                         # Calibracion del robot segun su posicion fisica. 
                         orientacion, aux = calibration(cx2,cy2,orientacion)                
-                        #print("Orientacion modificada: "+str(orientacion))
-                        # INGRESA FUNCION PARA TRANSFORMAR A PULSOS Y GUARDAR EN ARRAY 
                         #se invierte, para tener y como negativo y x como positivo 
                         pulsos,newQ5 = arm.solucion(cy2,cx2,aux,orientacion)
                         if(newQ5!=0):
                             global conteo 
                             conteo = conteo+1
-                            # print("llamado de pulsos: ")
-                            # print(pulsos,newQ5)
-                            # INGRESA FUNCION DE C++ PARA ENVIAR EL ARRAY CON LOS PULSOS 
                             command_1 = 'gcc pololu.c -o myprog'    
                             os.system(command_1)
                             command_2 = 'start myprog ' +str(pulsos[0])+' '+str(pulsos[1])+' '+str(pulsos[2])+' '+str(pulsos[3]) +' '+str(pulsos[4]) +' '+str(destino)+' '+str(newQ5)
                             os.system(command_2)
-                            time.sleep(11)
-                            new_agent.set_values(cy2, cx2, orientacion,aux) # x,y,orientacion 
+                            time.sleep(9)
+                            new_agent.set_values(cy2, cx2, orientacion,aux) 
 
                             global agent  
                             utils.agent[color] = new_agent 
                             min_prev = max_prev = []
-                            return new_agent # retorna a 
+                            return new_agent 
                         
                     new_agent.set_values(0,0,0,0)
                     return new_agent 
@@ -537,11 +489,11 @@ def main():
                 cap.release()
                 recording = False
             return 
-        elif app.aux == 1: # Presiono start correctamente  app.aux == 1:
+        elif app.aux == 1: 
             recording = True
 
         if recording: 
-            cap.set(cv2.CAP_PROP_AUTOFOCUS, 0) # turn the camera autofocus off
+            cap.set(cv2.CAP_PROP_AUTOFOCUS, 0) 
             _, frame = cap.read() 
 
             if frame is None:
@@ -553,12 +505,9 @@ def main():
             region = pool.apply_async(generate_mask, (frame, hsv, 'black',centro,destino))
             region = region.get()  
             if region: 
-
-                min_corner, max_corner = region # min corner tiene x.y minimo en pixeles, maxconer tiene x.y maximo en pixeles
-
+                min_corner, max_corner = region 
                 # define vpc values
                 vpc.set_values(min_corner[0], min_corner[1], max_corner[0], max_corner[1]) 
-
                 # convert limits coordinates to window (main layout)
                 vpc_min  = utils.vp2w(min_corner[0], min_corner[1], vpc)  # guarda x,y real de la esquina inferior
                 vpc_max  = utils.vp2w(max_corner[0], max_corner[1], vpc)  # guarda x,y real de la esquina superior
@@ -569,22 +518,19 @@ def main():
                     x1 = 0
                     y1 = 10.5
                     x2, y2 = utils.w2vp(x1,y1, vpc)
-
                     area_trabajo(frame ,min_corner ,max_corner, x2)
-                    # 
                     # call to function to detect objects 
                     global cent,conteo
                     centro = manage_agent(frame, hsv,app.array,cent) 
                     cent = [centro[0],centro[1]]
-
-                    if(conteo==app.cantidad): # si ya se clasificaron la misma cantidad de jengas seleccionado, rompe y cierra el programa
+                    if(conteo==app.cantidad): #condition for exit
                         break
                               
             #process image from camera
             imgbytes = cv2.imencode('.png', frame)[1].tobytes()            
             window['image'].update(data=imgbytes)
 
-        if cv2.waitKey(1) == ord('q'): # para cerrar la ventana y salir 
+        if cv2.waitKey(1) == ord('q'): # close window and exit
             break
                 
 if __name__=='__main__':

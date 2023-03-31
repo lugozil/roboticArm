@@ -157,27 +157,28 @@ int unloading(port, lugar,a1) {
 	Sleep(1200);
 	// left = 1 (2496) y right = 2 (496)
 
-	// izq con descarga en derecha 
-	if(a1<1296 && lugar == 1){
-		tiempo = 2800;
-	}
-	// izq con descarga en izq 
-	if(a1<1296 && lugar == 2){
-		tiempo = 1000;
-	}
+	// // izq con descarga en derecha 
+	// if(a1<1296 && lugar == 1){
+	// 	tiempo = 2800;
+	// }
+	// // izq con descarga en izq 
+	// if(a1<1296 && lugar == 2){
+	// 	tiempo = 1000;
+	// }
 
-	// derecha con descarga en derecha
-	if(a1>1696 && lugar == 1){
-		tiempo = 1000;
-	}
-	// derecha con descarga en izq
-	if(a1>1696 && lugar == 2){
-		tiempo = 2800;
-	}
+	// // derecha con descarga en derecha
+	// if(a1>1696 && lugar == 1){
+	// 	tiempo = 1000;
+	// }
+	// // derecha con descarga en izq
+	// if(a1>1696 && lugar == 2){
+	// 	tiempo = 2800;
+	// }
 
-	if(a1>1296 && a1<1696){
-		tiempo = 1800;
-	}
+	// if(a1>1296 && a1<1696){
+	// 	tiempo = 1800;
+	// }
+	tiempo = (lugar == 1 ?(a1<1296 ? 2800 : (a1>1696 ? 1000 : 1800)) : (a1<1296? 1000 : (a1>1696 ? 2800 : 1800)));
 
 	if (lugar ==1) {
 		// s1 para derecha  
