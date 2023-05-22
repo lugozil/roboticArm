@@ -17,7 +17,7 @@ pool = ThreadPool(processes=1)
 # # viewport for camera
 vpc = utils.ViewPort()
 # rgb colors for opencv
-rgb_black,rgb_white, cent, conteo= (0, 0, 0), (255, 255, 255), [0,0], 0
+rgb_black,rgb_white, cent, conteo,auxiliar, auxiliar2= (0, 0, 0), (255, 255, 255), [0,0], 0,0,0
 
 customtkinter.set_appearance_mode("dark")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
@@ -39,7 +39,7 @@ class App(customtkinter.CTk):
         self.geometry(str(420)+"x"+str(680)+"+"+str(pwidth)+"+"+str(pheight))
 
         # label and button
-        self.logo_label = customtkinter.CTkLabel(self, text="Classification System",justify=customtkinter.CENTER ,font=customtkinter.CTkFont(size=25, weight="bold"))
+        self.logo_label = customtkinter.CTkLabel(self, text="Clasification System",justify=customtkinter.CENTER ,font=customtkinter.CTkFont(size=25, weight="bold"))
         self.logo_label.place(x=70, y=20)
 
         self.label_1 = customtkinter.CTkLabel(self, justify=customtkinter.CENTER,text="Enter number of items:",font=customtkinter.CTkFont(size=15))
@@ -64,30 +64,43 @@ class App(customtkinter.CTk):
         self.label_3 = customtkinter.CTkLabel(self, justify=customtkinter.CENTER,text="Destinations",font=customtkinter.CTkFont(size=12),bg_color="gray17")
         self.label_3.place(x=230, y=235)
 
-        self.switch_1 = customtkinter.CTkSwitch(self, text="Red", width=10,height=14,switch_width=40,switch_height=20,bg_color="gray17",progress_color="firebrick2")
-        self.switch_1.place(x=100, y=280)
-        self.segmented_button_1 = customtkinter.CTkSegmentedButton(self, values=["Left", "Right"])
-        self.segmented_button_1.place(x=220, y=275)
 
-        self.switch_2 = customtkinter.CTkSwitch(self, text="Green", width=10,height=14,switch_width=40,switch_height=20,bg_color="gray17",progress_color="SpringGreen3")
-        self.switch_2.place(x=100, y=330)
-        self.segmented_button_2 = customtkinter.CTkSegmentedButton(self, values=["Left", "Right"])
-        self.segmented_button_2.place(x=220, y=325)
+        self.fondo_frame1 = customtkinter.CTkFrame(self,width=22,height=19,bg_color="gray17",fg_color="firebrick2")
+        self.fondo_frame1.place(x=90, y=280)
+        self.switch_1 = customtkinter.CTkSwitch(self, text="Red", width=10,height=14,switch_width=40,switch_height=20,bg_color="gray17",progress_color="dodger blue")
+        self.switch_1.place(x=122, y=280)
+        self.segmented_button_1 = customtkinter.CTkSegmentedButton(self, values=["  1  ", "  2  "])
+        self.segmented_button_1.place(x=230, y=275)
 
-        self.switch_3 = customtkinter.CTkSwitch(self, text="Blue", width=10,height=14,switch_width=40,switch_height=20,bg_color="gray17",progress_color="RoyalBlue3")
-        self.switch_3.place(x=100, y=380)
-        self.segmented_button_3 = customtkinter.CTkSegmentedButton(self, values=["Left", "Right"])
-        self.segmented_button_3.place(x=220, y=375)
 
-        self.switch_4 = customtkinter.CTkSwitch(self, text="Orange", width=10,height=14,switch_width=40,switch_height=20,bg_color="gray17",progress_color="dark orange")
-        self.switch_4.place(x=100, y=430)
-        self.segmented_button_4 = customtkinter.CTkSegmentedButton(self, values=["Left", "Right"])
-        self.segmented_button_4.place(x=220, y=425)
 
-        self.switch_5 = customtkinter.CTkSwitch(self, text="Brown", width=10,height=14,switch_width=40,switch_height=20,bg_color="gray17",progress_color="saddle brown")
-        self.switch_5.place(x=100, y=480)
-        self.segmented_button_5 = customtkinter.CTkSegmentedButton(self, values=["Left", "Right"])
-        self.segmented_button_5.place(x=220, y=475)
+        self.fondo_frame1 = customtkinter.CTkFrame(self,width=22,height=19,bg_color="gray17",fg_color="SpringGreen3")
+        self.fondo_frame1.place(x=90, y=330)
+        self.switch_2 = customtkinter.CTkSwitch(self, text="Green", width=10,height=14,switch_width=40,switch_height=20,bg_color="gray17",progress_color="dodger blue")
+        self.switch_2.place(x=122, y=330)
+        self.segmented_button_2 = customtkinter.CTkSegmentedButton(self, values=["  1  ", "  2  "])
+        self.segmented_button_2.place(x=230, y=325)
+
+        self.fondo_frame1 = customtkinter.CTkFrame(self,width=22,height=19,bg_color="gray17",fg_color="dodger blue")
+        self.fondo_frame1.place(x=90, y=380)
+        self.switch_3 = customtkinter.CTkSwitch(self, text="Blue", width=10,height=14,switch_width=40,switch_height=20,bg_color="gray17",progress_color="dodger blue")
+        self.switch_3.place(x=122, y=380)
+        self.segmented_button_3 = customtkinter.CTkSegmentedButton(self, values=["  1  ", "  2  "])
+        self.segmented_button_3.place(x=230, y=375)
+
+        self.fondo_frame1 = customtkinter.CTkFrame(self,width=22,height=19,bg_color="gray17",fg_color="dark orange")
+        self.fondo_frame1.place(x=90, y=430)
+        self.switch_4 = customtkinter.CTkSwitch(self, text="Orange", width=10,height=14,switch_width=40,switch_height=20,bg_color="gray17",progress_color="dodger blue")
+        self.switch_4.place(x=122, y=430)
+        self.segmented_button_4 = customtkinter.CTkSegmentedButton(self, values=["  1  ", "  2  "])
+        self.segmented_button_4.place(x=230, y=425)
+
+        self.fondo_frame1 = customtkinter.CTkFrame(self,width=22,height=19,bg_color="gray17",fg_color="saddle brown")
+        self.fondo_frame1.place(x=90, y=480)
+        self.switch_5 = customtkinter.CTkSwitch(self, text="Brown", width=10,height=14,switch_width=40,switch_height=20,bg_color="gray17",progress_color="dodger blue")
+        self.switch_5.place(x=122, y=480)
+        self.segmented_button_5 = customtkinter.CTkSegmentedButton(self, values=["  1  ", "  2  "])
+        self.segmented_button_5.place(x=230, y=475)
 
         self.checkbox_1 = customtkinter.CTkCheckBox(self, text= "Confirm")
         self.checkbox_1.place(x=70, y=550)
@@ -195,7 +208,7 @@ def search(color,array2):
     posiciones = np.where(lista == color)
     posicion = int(posiciones[0])
     destino = array2[posicion][1] # me da el destino
-    if(destino=='Left'): 
+    if(destino=='  1  '): 
         destino = 1
     else:
         destino = 2
@@ -227,57 +240,107 @@ def radians2degrees(angle):
 
 def calibration(cx2,cy2,orientacion):
     aux = auxorientacion = 0 
-# MODIFICACIONES PARA AJUSTAR ORIENTACION Y PRECISION DEL ROBOT SEGUN UBICACION FISICA (CALIBRACION)4
 
-# Right
+#right
     if(cx2 > 4.5 and orientacion<=90.00): 
-        auxorientacion = orientacion
-        orientacion +=98
-        aux = 1
+        print(orientacion)
         print("BANDERA: 1")
-        if(cx2<5): orientacion += 4
-        if(cx2 > 2 and cy2>14 and auxorientacion > 25 and auxorientacion <70): orientacion +=4
-        elif(cx2>12 and auxorientacion >0 and auxorientacion <25): orientacion -=6
+        aux = 7
+        auxorientacion = orientacion
+        orientacion+=90
+        if(cx2<10 and auxorientacion>70): orientacion-=165
+        elif(cx2>14 and auxorientacion>70): orientacion-=4
+
+        if(cx2<6 and cy2>8 and auxorientacion>70 and auxorientacion<90): orientacion+=10
+
+        if(cx2<9 and auxorientacion>50 and auxorientacion<70): orientacion+=25
+        elif(cx2>9 and auxorientacion>50 and auxorientacion<70): 
+            orientacion+=4
+            if(cx2>14):orientacion-=20
+        
+        if(cx2<9 and auxorientacion>25 and auxorientacion<50):
+            orientacion+=25
+            if(cy2<10):orientacion-=10
+        elif(cx2>14 and auxorientacion>25 and auxorientacion<50):orientacion-=20
+
+        if(cx2<10 and auxorientacion>0 and auxorientacion<25): 
+            orientacion+=20
+            if(cy2<10):orientacion-=10
+        if(cx2>12 and auxorientacion>0 and auxorientacion<25): orientacion-=16
 
     elif(cx2 > 4.5 and orientacion>90.00): # cx = cy pq esta invertido 
         auxorientacion = orientacion
-        orientacion -=82 
-        aux = 1
+        print(orientacion)
         print("BANDERA: 2")
-        if(cx2>4.5 and cx2<6.5): aux = 5
-        if(cx2 > 12 and orientacion > 0 and orientacion <25): orientacion -=15 
-        elif(cx2>10 and orientacion >25 and orientacion <50):
-            orientacion -=9
-            if(cx2>14): orientacion -=14
-        elif(cx2>2 and cx2<9 and orientacion >50 and orientacion <70): orientacion +=5
-        elif(cx2>9 and orientacion >50 and orientacion <70): orientacion -=21
-        elif(cx2>2 and cx2<10 and orientacion > 70 and orientacion < 100): orientacion +=2
-        elif(cx2>10 and orientacion >70 and orientacion <100): orientacion -=13
+        aux = 7
+        orientacion -=74
+
+        if(cx2<10 and auxorientacion<110): 
+            orientacion+=7
+            if(cy2<8):orientacion-=11
+        elif(cx2>12 and auxorientacion<110): 
+            orientacion-=16
+            if(cx2>15):orientacion-=7
+
+        if(cx2<14 and auxorientacion>110 and auxorientacion<140):
+            print("ESTA AQUI DENTRO")
+            orientacion+=1
+            if(cy2<8):orientacion-=20
+            if(cy2>8):orientacion-=15 # NUEVO
+        elif(cx2>14 and auxorientacion>110 and auxorientacion<140): 
+            orientacion-=4
+            if(cy2<8):orientacion-=20
+            
+
+        if(cx2<14 and auxorientacion>140 and auxorientacion<160):
+            orientacion+=1
+            if(cy2<8):orientacion-=20
+            if(cy2>8):orientacion-=15 # NUEVO
+        elif(cx2>14 and auxorientacion>140 and auxorientacion<160): 
+            orientacion+=1
+            if(cy2<8):orientacion-=25
+            if(cy2>8):orientacion-=15 # NUEVO
+
+        if(cx2>14 and auxorientacion>160):
+            orientacion-=22
+            if(cy2<10):orientacion-=24
+        elif(cx2<14 and auxorientacion>160): 
+            if(cy2<10):orientacion-=24
+
 
 # Left
     if(cx2 < -4.5 and orientacion>90.00):  
         orientacion +=4  # cx = cy pq esta invertido
+        print(orientacion)
+        print(cx2,cy2)
         aux = 2
         print("BANDERA: 3")
         if(cx2>-6): orientacion -=19
         if(cx2 < -12.5 and orientacion >110.00 and orientacion < 160.00):
             orientacion +=12
             aux = 3
-        elif(cx2 > -12.5 and orientacion >110.00 and orientacion < 165.00): orientacion -=7
+        elif(cx2 > -12.5 and orientacion >110.00 and orientacion < 165.00): orientacion -=2
         elif(cx2 < -12.5 and orientacion > 165 and orientacion < 180):
             orientacion +=12
             aux = 3
-            if(orientacion > 180): orientacion = 9
+            if(orientacion > 180): orientacion = 6
             if(cy2 >14):orientacion -=7
-        elif(cx2<-4 and cx2 > -7 and orientacion>110): orientacion -=28
+        elif(cx2 > -7 and orientacion>110): orientacion -=28
+        elif(cx2<-12 and orientacion<120):orientacion+=7  #
+        elif(cx2<-8 and cy2>10 and orientacion<120): orientacion-=9 #
+        elif(orientacion>160 and cy2<9): orientacion+=10
             
     elif(cx2 < -4.5 and orientacion < 90.00): 
         print("BANDERA: 4")
+        print(orientacion)
+        print(cx2,cy2)
         aux = 2
-        orientacion -=4
+        if(orientacion >25): orientacion -=7
+        if(cx2<-1 and cx2>-6 and cy2>8):orientacion-=8
         if(cx2 < -12.5 and orientacion >20.00 and orientacion < 70.00):
             orientacion +=12
-            aux = 3
+            aux = 7
+        #elif(cx2<-12.5 and orientacion>)
         elif(cx2< -12.5 and orientacion > 0 and orientacion < 20.00):
             orientacion +=12 
             aux = 3
@@ -286,23 +349,28 @@ def calibration(cx2,cy2,orientacion):
             if(cx2>-6.5): ((orientacion -10)*-1) +95
  
 # Center
-    if(cx2>-4.5 and cx2<1 and orientacion >=90): 
+
+    if(cx2>-4.9 and cx2<1 and orientacion >=90): 
         print("BANDERA: 5")
+        print(orientacion)
+        print(cx2,cy2)
         auxorientacion = orientacion 
         orientacion -=28
-        aux = 2
+        aux = 5
         if(auxorientacion>90 and auxorientacion<115): orientacion -=11
         if(cx2<1.5 and cx2>-1.5): 
             orientacion -=11
-            aux = 4
+            aux = 5
         if(auxorientacion >=115 and auxorientacion <=160): orientacion -=7
         elif(auxorientacion >160 and auxorientacion <=180): orientacion -=4
 
-    elif(cx2>-4.5 and cx2<1 and orientacion <90):
+    elif(cx2>-4.9 and cx2<1 and orientacion <90):
         print("BANDERA: 6")
+        print(orientacion)
+        print(cx2,cy2)
         auxorientacion = orientacion
         orientacion -=37 
-        aux = 2
+        aux = 5
         if(auxorientacion>=30 and auxorientacion<=70):
             orientacion = orientacion 
             print("C 0")
@@ -312,26 +380,29 @@ def calibration(cx2,cy2,orientacion):
                 orientacion = ((orientacion -10 ) *-1)+93 
                 print("Bandera 3")
 
-# clasificacion del medio cuando cx2 > 1 hasta cx2<3.5
+# # clasificacion del medio cuando cx2 > 1 hasta cx2<3.5
     if(cx2>1 and cx2<4.5 and orientacion >=90): 
         print("BANDERA: 7")
-        aux = 6
+        print(orientacion)
+        print(cx2,cy2)
+        aux = 3
         auxorientacion = orientacion
         orientacion -=50         
-        print("derecho 1")
     elif(cx2>1 and cx2<4.5 and auxorientacion>110 and auxorientacion<155): orientacion +=3
     elif(cx2>1 and cx2<4.5 and auxorientacion>=155 and orientacion <180): orientacion -=4
 
     elif(cx2>1 and cx2<4.5 and orientacion <90):
         print("BANDERA: 8")
+        print(orientacion)
+        print(cx2,cy2)
         auxorientacion = orientacion
         orientacion -=51
-        aux = 2 
-        if(auxorientacion>25 and auxorientacion<70): orientacion -=21
+        aux = 3 
+        if(auxorientacion>25 and auxorientacion<70 and orientacion>15): orientacion -=21
         elif(auxorientacion>0 and auxorientacion<=25): orientacion = ((orientacion-10)*-1) +95
 
     print(orientacion)
-    time.sleep(10)
+    # time.sleep(10)
 
     return orientacion,aux
 
@@ -375,12 +446,13 @@ def area_trabajo(frame ,min_corner ,max_corner, x2):
     cv2.line(frame,orige,fin,rgb_black,2)
 
 def generate_mask(frame, hsv, color,centro,destino):
+
     mask = cv2.inRange(hsv, np.array(data.HSV_COLORS[color][0]), np.array(data.HSV_COLORS[color][1])) 
     contours, _ = cv2.findContours(mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     #variables to define the rectangle of viewport
     num_corner,newQ5,out = 0, 0, 0
     corner1,corner2 = [],[] 
-    global min_prev, max_prev 
+    global min_prev, max_prev, conteo, auxiliar, auxiliar2
 
     for count in contours:  
         # using functions to get the contour of shapes
@@ -445,24 +517,39 @@ def generate_mask(frame, hsv, color,centro,destino):
                     
                     if(cx2<4 and cx2>-4 and cy2<4): out = 1
 
-                    if((difx>2 or difx<-1) and (dify>2 or dify<-2) and out!=1): # si no es la posicion del ultimo jenga, ejecuta. 
+                    
+
+                    if((difx>2 or difx<-1) and (dify>2 or dify<-2) and out!=1.2): # si no es la posicion del ultimo jenga, ejecuta. 
                         # Calibracion del robot segun su posicion fisica. 
-                        orientacion, aux = calibration(cx2,cy2,orientacion)                
+                        orientacion, aux = calibration(cx2,cy2,orientacion)              
                         #se invierte, para tener y como negativo y x como positivo 
                         pulsos,newQ5 = arm.solucion(cy2,cx2,aux,orientacion)
-                        if(newQ5!=0):
-                            global conteo 
+                        if(conteo==0):
+                            auxiliar = pulsos[0] 
+                            out = 35
+                        else: 
+                            # print("QUE LLEGA AQUI PUESSSSSSSSSSSSS")
+                            # print(auxiliar,pulsos[0])
+                            # time.sleep(10)
+                            out = auxiliar - pulsos[0]  # CAMBIAR LA VARIABLE AUXILIAR POR UN ARRAY QUE SE RECORRA
+                            # Y SI ENCUENTRA EL VALOR DE PULSOS CERCANO(DIF>30 O DIF<30) EN EL AARRAY, NO SE EJECUTE. O QUE SE EJECUTE AL SER MAYORES
+                            print("ESTE ES EL AUXILIAR: ")
+                            print(auxiliar,pulsos[0])
+
+                        if(newQ5!=0 and ((out>30 or out<-30) or auxiliar2!=cx2)): 
+                            auxiliar = pulsos[0] 
                             conteo = conteo+1
                             command_1 = 'gcc pololu.c -o myprog'    
                             os.system(command_1)
                             command_2 = 'start myprog ' +str(pulsos[0])+' '+str(pulsos[1])+' '+str(pulsos[2])+' '+str(pulsos[3]) +' '+str(pulsos[4]) +' '+str(destino)+' '+str(newQ5)
                             os.system(command_2)
-                            time.sleep(9)
+                            time.sleep(10.2)
                             new_agent.set_values(cy2, cx2, orientacion,aux) 
 
                             global agent  
                             utils.agent[color] = new_agent 
                             min_prev = max_prev = []
+                            auxiliar2 = cx2
                             return new_agent 
                         
                     new_agent.set_values(0,0,0,0)
@@ -475,7 +562,7 @@ def generate_mask(frame, hsv, color,centro,destino):
 def main():
     sg.theme('Black')
     window = sg.Window('LUBOT', main_layout(), element_justification='c', location=(350, 100))
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(1)
     recording = False
     app = App()
     app.mainloop()

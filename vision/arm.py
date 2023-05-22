@@ -40,22 +40,27 @@ def solucion(x,y,z,orientacion): # dado x,y,z da los angulos y pulsos de cada ar
         q2 = rad2degrees(asin(a/c) + acos(arriba2/abajo2))
         q3 = rad2degrees(acos(arriba3/abajo3))
         q4 = rad2degrees(asin(b/c) + acos(arriba4/abajo4)) #q4 = 360-90-q1-q2-q3
-        q5 = orientacion-90  #orientacion atan(yz/xz q5 
+        q5 = orientacion-90 
 
         q2 = round((90-q2),5) # resta de 90 segun mi sistema de referencia 
         q3 = round((90-q3),5) 
         q4 = round((90-q4),5) 
 
         # arreglo para lado positivo de y, desfase por posicion del robot 
-        if(z==1 or z==2): q1 = q1-4.5
+        if(z==1 or z==2): q1 = q1-3.5
         elif(z==3): q1= q1 -1
-        elif(z==4): q1 = q1-5 
-        elif(z==5): q1 = q1-6
-        elif(z==6): q1 = q1-4
+        elif(z==4): q1 = q1-3.5 
+        elif(z==5): q1 = q1-4.5
+        elif(z==6): q1 = q1-3.5
+        elif(z==7): q1 = q1-2 
+        elif(z==8): q1 = q1
+        
+
             
         array = pulsos(q1,q2,q3,q4,q5) # guardar en array la conversion de grados ya restados a pulsos 
-        newQ5 = (q1 * -1)
+        newQ5 = (q1*-1)
         newQ5 = round(angulos_pulsos(newQ5,-90,90,2352,496)) # angulo que debe moverse a5 para quedar 90 en el medio 
+        #newQ5 = newQ5
 
     return array,newQ5
 

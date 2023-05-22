@@ -7,8 +7,8 @@ import arm
 
 x = 10.56
 y = -6.82
-z = 2 
-aux = 2
+z = 6 
+aux = 20
 orientacion = arm.solucion(x,y,z,aux)
 print(orientacion)
 
