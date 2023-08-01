@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import tkinter as tk
 # cambio en la rama test
+# otraq prueba dandole full 
 
 # para comentar ctrl+k+c y descomentar ctrl+k+u
 # Cargar el video
