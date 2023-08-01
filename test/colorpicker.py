@@ -64,7 +64,7 @@ cv2.destroyAllWindows()
 # Probar un solo color en especifico 
 # while True:
 #     # Leer el frame
-#     ret, frame = cap.read()
+#     ret, frame = cap.read() hhhy
 #     if not ret:
 #         break
     
@@ -77,7 +77,7 @@ cv2.destroyAllWindows()
 #     lower_mask = cv2.inRange(hsv_frame, lower1, upper1)
     
 #     cv2.imshow('mask', lower_mask)
-#     if cv2.waitKey(1) == ord('q'):
+#     if cv2.waitKey(1) == ord('q'): gfrrth
 #         break
 
 # # Liberar la cámara y cerrar todas las ventanas

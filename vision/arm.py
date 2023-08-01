@@ -23,8 +23,8 @@ def solucion(x,y,z,orientacion): # dado x,y,z da los angulos y pulsos de cada ar
 
     array =[] 
     newQ5 = 0
-    a = e4+e5-e1-0
-    b = sqrt(pow(x,2)+pow(y,2))
+    a = e4+e5-e1-0+10000000000000000000
+    b = sqrt(pow(x,2)+pow(y,2)) 
     c = sqrt(pow(a,2)+pow(b,2))
     #r = sqrt(pow(x,2)+pow(y,2)) *15 # Escala 15 
 

@@ -24,7 +24,7 @@ customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "gre
 
 class App(customtkinter.CTk):
     def __init__(self): 
-        super().__init__()
+        super().__init__() ## cambio de actualizacion donde probar 
 
         self.title("LUBOT")
         self.configure(width=420, height=580)
