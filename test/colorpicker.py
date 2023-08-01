@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import tkinter as tk
-
+# cambio en la rama test
 
 # para comentar ctrl+k+c y descomentar ctrl+k+u
 # Cargar el video
@@ -61,7 +61,7 @@ cv2.destroyAllWindows()
 
 
 
-# Probar un solo color en especifico 
+# Probar un solo color en especifico. 
 # while True:
 #     # Leer el frame
 #     ret, frame = cap.read() hhhy
